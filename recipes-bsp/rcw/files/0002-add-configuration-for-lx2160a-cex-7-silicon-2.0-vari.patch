@@ -1,0 +1,110 @@
+From e47c38f1e6eb87cfe0e61a0fa9c589a7dcb61593 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Wed, 19 Jun 2024 16:06:01 +0200
+Subject: [PATCH 2/2] add configuration for lx2160a-cex-7 silicon 2.0 variant
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ .../rcw_2000_700_2900_8_5_2.rcw               |  3 +++
+ lx2160acex7/include/common_pbi.rcwi           | 18 +++++++++++++++
+ .../rcw_2000_700_2900_8_5_2.rcw               | 22 +++++++++++++++++++
+ lx2160acex7_rev2/Makefile                     |  1 +
+ lx2160acex7_rev2/README                       |  0
+ 5 files changed, 44 insertions(+)
+ create mode 100644 lx2160acex7_rev2/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
+ create mode 100644 lx2160acex7_rev2/Makefile
+ create mode 100644 lx2160acex7_rev2/README
+
+diff --git a/lx2160acex7/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw b/lx2160acex7/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
+index 8caeb9f..1053d7b 100644
+--- a/lx2160acex7/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
++++ b/lx2160acex7/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
+@@ -7,8 +7,11 @@
+  * Core     -- 2000 MHz
+  * Platform -- 700  MHz
+  * DDR      -- 2900 MT/s
++ *
++ * Silicon 1.0
+  */
+ 
++#define LX_SR 1
+ #include <../lx2160asi/lx2160a.rcwi>
+ #include <../lx2160acex7/include/pll_2000_700_xxxx.rcwi>
+ #include <../lx2160acex7/include/pll_xxxx_xxx_2900.rcwi>
+diff --git a/lx2160acex7/include/common_pbi.rcwi b/lx2160acex7/include/common_pbi.rcwi
+index 671c7db..0c28f92 100644
+--- a/lx2160acex7/include/common_pbi.rcwi
++++ b/lx2160acex7/include/common_pbi.rcwi
+@@ -16,13 +16,31 @@ write 0x2320000,0x20000000
+ /* Errata for SATA controller */
+ #include <../lx2160asi/a010554.rcw>
+ 
++#if LX_SR == 1
+ /* Errata for PCIe controller */
+ #include <../lx2160asi/a011270.rcw>
+ #include <../lx2160asi/a050234.rcw>
++#endif
+ 
+ /* common PBI commands */
+ #include <../lx2160asi/common.rcw>
+ 
++#if LX_SR == 2
++/*PCIe Errata A-009531*/
++#include <../lx2160asi/a009531_PEX3.rcw>
++#include <../lx2160asi/a009531_PEX5.rcw>
++
++/*PCIe Errata A-008851*/
++#include <../lx2160asi/a008851_PEX3.rcw>
++#include <../lx2160asi/a008851_PEX5.rcw>
++
++/*SerDes Errata A-050479*/
++#include <../lx2160asi/a050479.rcw>
++
++/* Errata A-050426 */
++#include <../lx2160asi/a050426.rcw>
++#endif
++
+ /*
+  * FlexSPI controller supports modifcation of the FlexSPI Clock
+  * divisor value, default value of this is 80.
+diff --git a/lx2160acex7_rev2/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw b/lx2160acex7_rev2/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
+new file mode 100644
+index 0000000..67a270b
+--- /dev/null
++++ b/lx2160acex7_rev2/2000_700_2900_8_5_2/rcw_2000_700_2900_8_5_2.rcw
+@@ -0,0 +1,22 @@
++/*
++ * SerDes Protocol 1 -  8
++ * SerDes Protocol 2 -  5
++ * SerDes Protocol 3 -  2
++ *
++ * Frequencies:
++ * Core     -- 2000 MHz
++ * Platform -- 700  MHz
++ * DDR      -- 2900 MT/s
++ *
++ * Silicon 2.0
++ */
++
++#define LX_SR 2
++#include <../lx2160asi/lx2160a.rcwi>
++#include <../lx2160acex7/include/pll_2000_700_xxxx.rcwi>
++#include <../lx2160acex7/include/pll_xxxx_xxx_2900.rcwi>
++#include <../lx2160acex7/include/common.rcwi>
++#include <../lx2160acex7/include/SD1_8.rcwi>
++#include <../lx2160acex7/include/SD2_5.rcwi>
++#include <../lx2160acex7/include/SD3_2.rcwi>
++#include <../lx2160acex7/include/common_pbi.rcwi>
+diff --git a/lx2160acex7_rev2/Makefile b/lx2160acex7_rev2/Makefile
+new file mode 100644
+index 0000000..f77e46b
+--- /dev/null
++++ b/lx2160acex7_rev2/Makefile
+@@ -0,0 +1 @@
++include ../Makefile.inc
+diff --git a/lx2160acex7_rev2/README b/lx2160acex7_rev2/README
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.35.3
+
