@@ -79,8 +79,8 @@ DDR Clock can be configured in local.conf using `LX2160A_DDR_SPEED`, supported v
 
 - `2400`
 - `2600`
-- `2900`
-- `3200` (default)
+- `2900` only for LX2162A, and LX2160A binned 2GHz and higher (default)
+- `3200` only for LX2160A binned 2.2GHz
 
 ### CPU Clock
 
@@ -88,6 +88,12 @@ CPU (Cortex A72) Clock can be configured in local.conf using `LX2160A_CPU_SPEED`
 
 - `2000` (default, recommended)
 - `2200` (for over-clocking, or for specifically purchased 2.2GHz binned SoC)
+
+### Bus Clock
+
+Bus clock can be configured in local.conf using `LX2160A_BUS_SPEED`, supported values are:
+
+- `700` only for LX2160A binned 2GHz and higher (default)
 
 ## Maintainer Notes
 
