@@ -1,0 +1,17 @@
+# short-description: Create generic disk image with a boot partition
+# long-description:
+# Create a generic image that can be written onto any block storage using dd
+# for use with LX2160A SoC family, providing only kernel + rootfs.
+#
+# The disk layout used is:
+#  ------ --------
+# | boot | rootfs |
+#  ------ --------
+# ^
+# |
+# 4MiB
+#
+part /boot --source bootimg-partition --sourceparams="loader=u-boot" --ondisk sda --fstype=vfat --label boot --use-uuid --active --offset 8192s --size 64
+part / --source rootfs --ondisk sda --fstype=ext4 --label rootfs --use-uuid --align 4096
+
+bootloader --ptable msdos

@@ -1,0 +1,73 @@
+From 4cf3e6792e76c0e2fdc04e9831cd45f2896d22dd Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Wed, 9 Oct 2024 15:18:25 +0200
+Subject: [PATCH] wic: add supppport for generating images without partition
+ table
+
+Wic wks files are great for laying out various pieces that go at
+offsets or partitions into bootable images not just for standard sotrgae
+devices using partition tables - but also for spi flash or emmc boot
+partitions which in itself do not have any traditional partition tables.
+
+Add support for 'bootloader --ptable none' to generate imaegs without a
+partition table at sector 0 - neither mbr nor gpt.
+This is particularly useful for putting blobs at the first sector.
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ scripts/lib/wic/ksparser.py              |  2 +-
+ scripts/lib/wic/plugins/imager/direct.py | 17 ++++++++++-------
+ 2 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/scripts/lib/wic/ksparser.py b/scripts/lib/wic/ksparser.py
+index 0df9eb0d05..d26bb05251 100644
+--- a/scripts/lib/wic/ksparser.py
++++ b/scripts/lib/wic/ksparser.py
+@@ -190,7 +190,7 @@ class KickStart():
+         bootloader = subparsers.add_parser('bootloader')
+         bootloader.add_argument('--append')
+         bootloader.add_argument('--configfile')
+-        bootloader.add_argument('--ptable', choices=('msdos', 'gpt'),
++        bootloader.add_argument('--ptable', choices=('msdos', 'gpt', 'none'),
+                                 default='msdos')
+         bootloader.add_argument('--timeout', type=int)
+         bootloader.add_argument('--source')
+diff --git a/scripts/lib/wic/plugins/imager/direct.py b/scripts/lib/wic/plugins/imager/direct.py
+index 4d0b836ef6..c873e72848 100644
+--- a/scripts/lib/wic/plugins/imager/direct.py
++++ b/scripts/lib/wic/plugins/imager/direct.py
+@@ -401,6 +401,8 @@ class PartitionedImage():
+                     overhead = MBR_OVERHEAD
+                 elif self.ptable_format == "gpt":
+                     overhead = GPT_OVERHEAD
++                else:
++                    overhead = 0
+ 
+                 # Skip one sector required for the partitioning scheme overhead
+                 self.offset += overhead
+@@ -509,14 +511,15 @@ class PartitionedImage():
+         with open(self.path, 'w') as sparse:
+             os.ftruncate(sparse.fileno(), self.min_size)
+ 
+-        logger.debug("Initializing partition table for %s", self.path)
+-        exec_native_cmd("parted -s %s mklabel %s" %
+-                        (self.path, self.ptable_format), self.native_sysroot)
++        if self.ptable_format != "none":
++            logger.debug("Initializing partition table for %s", self.path)
++            exec_native_cmd("parted -s %s mklabel %s" %
++                            (self.path, self.ptable_format), self.native_sysroot)
+ 
+-        logger.debug("Set disk identifier %x", self.identifier)
+-        with open(self.path, 'r+b') as img:
+-            img.seek(0x1B8)
+-            img.write(self.identifier.to_bytes(4, 'little'))
++            logger.debug("Set disk identifier %x", self.identifier)
++            with open(self.path, 'r+b') as img:
++                img.seek(0x1B8)
++                img.write(self.identifier.to_bytes(4, 'little'))
+ 
+         logger.debug("Creating partitions")
+ 
+-- 
+2.43.0
+
