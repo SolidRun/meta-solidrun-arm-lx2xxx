@@ -73,6 +73,13 @@ jobs:
         with:
           path: sources/meta-solidrun-arm-lx2xxx
 
+      - name: Patch dependency layers
+        shell: bash {0}
+        run: |
+          pushd sources/poky
+          git am ../../sources/meta-solidrun-arm-lx2xxx/patches/poky/*.patch
+          popd
+
       - name: Get build tag
         shell: bash {0}
         id: tag_step
@@ -125,7 +132,9 @@ jobs:
             export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
             export MACHINE=lx2160acex7-rev2
             bitbake -k fsl-image-networking
-            wic create lx2160a-bootimg-sd -e fsl-image-networking
+            wic create lx2160a-bootimg-mmc -e fsl-image-networking
+            wic create lx2160a-bootimg-xspi -e fsl-image-networking
+            wic create lx2160a-rootimg -e fsl-image-networking
         continue-on-error: true
 
       - name: Update cache on the server (build may have failed)
@@ -160,8 +169,10 @@ jobs:
             mv $DEPLOY_PATH/device-tree.tgz deploy/
             cp -L $DEPLOY_PATH/Image deploy/
             cp -L $DEPLOY_PATH/modules-lx2160acex7-rev2.tgz deploy/
-            cp build_lx2160acex7-rev2/lx2160a-bootimg-sd.wks*.direct deploy/lx2160a-bootimg-sd.img
-            xz -9 deploy/lx2160a-bootimg-sd.img
+            cp build_lx2160acex7-rev2/lx2160a-bootimg-mmc.wks*.direct deploy/lx2160a-bootimg-mmc.img
+            cp build_lx2160acex7-rev2/lx2160a-bootimg-xspi.wks*.direct deploy/lx2160a-bootimg-xspi.img
+            cp build_lx2160acex7-rev2/lx2160a-rootimg.wks*.direct deploy/lx2160a-rootimg.img
+            xz -9 deploy/lx2160a-*.img
             ls -lh deploy/
 
       - name: Deploy to the local minio storage
@@ -179,7 +190,7 @@ jobs:
   publish_images:
     needs: build_images
     runs-on: self-hosted
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/kirkstone' && github.event_name != 'pull_request'
     steps:
       - name: Download an artifacts from MinIO
         uses: yakubique/minio-download@v1.1.1

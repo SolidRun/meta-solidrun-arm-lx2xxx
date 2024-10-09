@@ -1,7 +1,7 @@
-# short-description: Create SD card image with a boot partition
+# short-description: Create SD-Card/eMMC image with a boot partition
 # long-description:
-# Create an image that can be written onto a SD card using dd for use
-# with LX2160A SoC family.
+# Create an image that can be written onto an SD card or eMMC using dd
+# for use with LX2160A SoC family.
 # It uses atf, u-boot, mc-utils, management-complex
 #
 # The disk layout used is:
@@ -12,13 +12,13 @@
 # | |             |        |     |                    |
 # 0 4kiB          1MiB     8MiB  10MiB                64MiB
 #
-part bl2 --source rawcopy --sourceparams="file=atf/bl2_sd.pbl" --ondisk mmcblk --no-table --offset 8s
+part bl2 --source rawcopy --sourceparams="file=atf/bl2_auto.pbl" --ondisk mmcblk --no-table --offset 8s
 part bl3 --source rawcopy --sourceparams="file=atf/fip_uboot.bin" --ondisk mmcblk --no-table --offset 2048s
 part ddr --source rawcopy --sourceparams="file=ddr-phy/fip_ddr.bin" --ondisk mmcblk --no-table --offset 16384s
 part mc-fw --source rawcopy --sourceparams="file=mc_app/mc.itb" --ondisk mmcblk --no-table --offset 20480s
 part mc-dpl --source rawcopy --sourceparams="file=mc-utils/clearfog-cx-s1_8-s2_0-dpl.dtb" --ondisk mmcblk --no-table --offset 26624s
 part mc-dpc --source rawcopy --sourceparams="file=mc-utils/clearfog-cx-s1_8-s2_0-dpc.dtb" --ondisk mmcblk --no-table --offset 28672s
-part /boot --source bootimg-partition --sourceparams="loader=u-boot" --ondisk mmcblk --fstype=vfat --label boot --active --offset 131072s --size 64
+part /boot --source bootimg-partition --sourceparams="loader=u-boot" --ondisk mmcblk --fstype=vfat --label boot --active --use-uuid --offset 131072s --size 64
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs --use-uuid --align 4096
 
 bootloader --ptable msdos
