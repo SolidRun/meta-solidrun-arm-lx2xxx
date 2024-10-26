@@ -122,6 +122,20 @@ Bus clock can be configured in local.conf using `LX2160A_BUS_SPEED`, supported v
 - `700` only for LX2160A binned 2GHz and higher (default)
 - `750` (for over-clocking, or for specifically purchased 2.2GHz binned SoC)
 
+### MC DPC & DPL
+
+Management Complex configuration can be configured in local.conf using `MC_FLAVOUR`, `MC_DPC` and `MC_DPL` variables, supported values are:
+
+- `MC_FLAVOUR=CEX6`:
+
+   - `MC_DPC=evb-s1_3-s2_0-dpc.dtb MC_DPL=evb-s1_3-s2_0-dpl.dtb`
+
+- `MC_FLAVOUR=CEX7`:
+
+   - `MC_DPC=clearfog-cx-s1_8-s2_0-dpc.dtb MC_DPL=clearfog-cx-s1_8-s2_0-dpl.dtb`
+
+Additional configurations are added by patching `mc-utils` package and adding files at `LX2160A-<MC_FLAVOUR>/`.
+
 ## Known Issues
 
 ## Failed to spawn fakeroot worker: [Errno 32] Broken pipe

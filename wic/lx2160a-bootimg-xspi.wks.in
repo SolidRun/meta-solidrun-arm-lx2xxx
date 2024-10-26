@@ -16,7 +16,7 @@ part bl2 --source rawcopy --sourceparams="file=atf/bl2_auto.pbl" --ondisk mmcblk
 part bl3 --source rawcopy --sourceparams="file=atf/fip_uboot.bin" --ondisk mmcblk --no-table --offset 2048s
 part ddr --source rawcopy --sourceparams="file=ddr-phy/fip_ddr.bin" --ondisk mmcblk --no-table --offset 16384s
 part mc-fw --source rawcopy --sourceparams="file=mc_app/mc.itb" --ondisk mmcblk --no-table --offset 20480s
-part mc-dpl --source rawcopy --sourceparams="file=mc-utils/clearfog-cx-s1_8-s2_0-dpl.dtb" --ondisk mmcblk --no-table --offset 26624s
-part mc-dpc --source rawcopy --sourceparams="file=mc-utils/clearfog-cx-s1_8-s2_0-dpc.dtb" --ondisk mmcblk --no-table --offset 28672s
+part mc-dpl --source rawcopy --sourceparams="file=mc-utils/${MC_DPL}" --ondisk mmcblk --no-table --offset 26624s
+part mc-dpc --source rawcopy --sourceparams="file=mc-utils/${MC_DPC}" --ondisk mmcblk --no-table --offset 28672s
 
 bootloader --ptable none --source empty

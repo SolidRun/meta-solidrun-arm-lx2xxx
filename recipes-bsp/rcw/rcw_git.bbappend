@@ -11,7 +11,12 @@ SRC_URI += "file://0001-add-configuration-solidrun-lx2160a-cex-7-on-clearfog.pat
             file://0007-bootlocptr-reduce-size-of-pbi-section.patch \
             file://0008-lx2160acex7-change-2.2GHz-configuration-platform-clo.patch \
             file://0009-lx2160acex7-add-configuration-for-fraction-ddr-speed.patch \
+            file://0010-add-configuration-solidrun-internal-lx2160a-cex6-eva.patch \
+            file://0011-lx2160acex7-enable-A-050426-workaround-for-silicon-o.patch \
+            file://0012-lx2160acex6-enable-pci-errata-workarounds-for-all-ac.patch \
+            file://0013-lx2160acex6-add-configuration-for-2.2GHz-binned-soc.patch \
 "
 
+BOARD_TARGETS:lx2160acex6-rev2 = "lx2160acex6_rev2"
 BOARD_TARGETS:lx2160acex7 = "lx2160acex7 lx2160acex7_rev2"
 BOARD_TARGETS:lx2160acex7-rev2 = "lx2160acex7 lx2160acex7_rev2"

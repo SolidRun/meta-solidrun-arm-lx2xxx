@@ -1,2 +1,3 @@
+PLATFORM_FLAVOR:lx2160acex6-rev2 = "lx2160ardb"
 PLATFORM_FLAVOR:lx2160acex7 = "lx2160ardb"
 PLATFORM_FLAVOR:lx2160acex7-rev2 = "lx2160ardb"
