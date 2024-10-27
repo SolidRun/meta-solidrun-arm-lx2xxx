@@ -10,6 +10,8 @@ SRC_URI += "file://0001-arm64-dts-lx2160a-cex7-add-gpio-hog-for-fan-controll.pat
             file://0006-arm64-dts-lx2160a-clearfog-itx-enable-pcie-nodes-for.patch \
             file://0007-arm64-dts-lx2160a-extend-32-bit-and-add-64-bit-pci-r.patch \
             file://0008-arm64-dts-lx2160a-cex6-evb-update-spi-bus-descriptio.patch \
+            file://0009-arm64-dts-lx2160a-cex6-enable-optee-os.patch \
+            file://0010-arm64-dts-lx2160a-cex7-enable-optee-os.patch \
 "
 
 # Enable non-default kernel configs
