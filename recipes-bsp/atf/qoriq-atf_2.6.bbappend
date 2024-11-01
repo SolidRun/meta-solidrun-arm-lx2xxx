@@ -15,8 +15,9 @@ SRC_URI += "file://0001-plat-nxp-lx2160a-auto-boot.patch \
             file://0011-lx2160acex7-flush-i2c-bus-with-spd-eeprom-before-ddr.patch \
             file://0012-plat-lx2160a-fix-building-without-NXP_NV_SW_MAINT_LA.patch \
             file://0013-plat-lx2160a-fix-boot-without-spi-flash-disable-non-.patch \
+            file://0014-add-separate-platform-for-solidrun-lx2162a-som.patch \
 "
 
-PLATFORM:lx2160acex6-rev2 = "lx2160acex6"
-PLATFORM:lx2160acex7 = "lx2160acex7"
-PLATFORM:lx2160acex7-rev2 = "lx2160acex7"
+PLATFORM:lx2160a-cex6 = "lx2160acex6"
+PLATFORM:lx2160a-cex7 = "lx2160acex7"
+PLATFORM:lx2162a-som = "lx2162asom"

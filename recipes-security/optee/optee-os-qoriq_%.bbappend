@@ -1,3 +1,3 @@
-PLATFORM_FLAVOR:lx2160acex6-rev2 = "lx2160ardb"
-PLATFORM_FLAVOR:lx2160acex7 = "lx2160ardb"
-PLATFORM_FLAVOR:lx2160acex7-rev2 = "lx2160ardb"
+PLATFORM_FLAVOR:lx2160a-cex6 = "lx2160ardb"
+PLATFORM_FLAVOR:lx2160a-cex7 = "lx2160ardb"
+PLATFORM_FLAVOR:lx2162a-som = "lx2160ardb"

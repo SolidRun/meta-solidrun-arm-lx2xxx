@@ -1,12 +1,12 @@
 #@TYPE: Machine
-#@NAME: SolidRun LX2160ACEX7
+#@NAME: SolidRun LX2160A CEX-6
 #@SOC: LSCH3
-#@DESCRIPTION: Machine configuration for SolidRun LX2160A Rev 1.0 Com-Express Type 7 Module
+#@DESCRIPTION: Machine configuration for SolidRun Internal LX2160A Rev 2.0 COM-Express Type 6 Module
 
 require conf/machine/include/qoriq-arm64.inc
-require conf/machine/include/arm/arch-arm64.inc
+require conf/machine/include/arm/armv8a/tune-cortexa72.inc
 
-MACHINEOVERRIDES =. "fsl-lsch3:lx2160a:"
+MACHINEOVERRIDES =. "lx2160a-cex6:fsl-lsch3:lx2160a:"
 
 MACHINE_FEATURES:append = " optee "
 
@@ -16,14 +16,10 @@ KERNEL_IMAGETYPES = "fitImage"
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"
 
-UBOOT_CONFIG ??= "tfa-secure-boot tfa"
+UBOOT_CONFIG ?= "tfa-secure-boot tfa"
 UBOOT_CONFIG[tfa] = "lx2160acex7_tfa_defconfig,,u-boot-dtb.bin"
 UBOOT_CONFIG[tfa-secure-boot] = "lx2160ardb_tfa_SECURE_BOOT_defconfig,,u-boot-dtb.bin"
 
-KERNEL_DEVICETREE ?= " \
-	freescale/fsl-lx2160a-clearfog-cx.dtb \
-	freescale/fsl-lx2160a-honeycomb.dtb \
-"
 KERNEL_DEFCONFIG ?= "defconfig"
 
 SERIAL_CONSOLES ?= "115200;ttyS0 115200;ttyS1 115200;ttyAMA0"
@@ -34,11 +30,6 @@ LX2160A_CPU_SPEED ?= "2000"
 LX2160A_DDR_SPEED ?= "2900"
 
 UEFI_XSPIBOOT ?= "LX2160ARDB_EFI_NORBOOT.fd"
-BOOTTYPE ?= "flexspi_nor sd emmc auto"
-RCWXSPI ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_8_5_2_xspi"
-RCWSD ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_8_5_2_sdhc"
-RCWEMMC ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_8_5_2_sdhc"
-RCWAUTO ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_8_5_2_auto"
 
 EXTRA_IMAGEDEPENDS += "management-complex mc-utils rcw ls2-phy ddr-phy uefi qoriq-atf inphi"
 USE_VT = "0"
@@ -49,9 +40,7 @@ USE_VT = "0"
 IMAGE_BOOT_FILES:append = "${KERNEL_DEVICETREE}"
 
 # select DPL/DPC source (config/lx2160a/LX2160A-<MC_FLAVOUR>)
-MC_FLAVOUR ?= "CEX7"
+MC_FLAVOUR ?= "CEX6"
 
-# select DPL/DPC (config/lx2160a/LX2160A-<MC_FLAVOUR>/<DPL/DPC>)
-# variable consumed in wks files
-MC_DPC ?= "clearfog-cx-s1_8-s2_0-dpc.dtb"
-MC_DPL ?= "clearfog-cx-s1_8-s2_0-dpl.dtb"
+# select rev2 rcw
+RCW_FOLDER ?= "lx2160acex6_rev2"

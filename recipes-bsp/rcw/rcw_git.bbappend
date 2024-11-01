@@ -15,8 +15,11 @@ SRC_URI += "file://0001-add-configuration-solidrun-lx2160a-cex-7-on-clearfog.pat
             file://0011-lx2160acex7-enable-A-050426-workaround-for-silicon-o.patch \
             file://0012-lx2160acex6-enable-pci-errata-workarounds-for-all-ac.patch \
             file://0013-lx2160acex6-add-configuration-for-2.2GHz-binned-soc.patch \
+            file://0014-lx2162aqds-re-enable-dpmac11.patch \
+            file://0015-add-configuration-for-lx2162a-som-and-clearfog-evalu.patch \
+            file://0016-lx2160acex7-clearfog-cx-add-configuration-for-serdes.patch \
 "
 
-BOARD_TARGETS:lx2160acex6-rev2 = "lx2160acex6_rev2"
-BOARD_TARGETS:lx2160acex7 = "lx2160acex7 lx2160acex7_rev2"
-BOARD_TARGETS:lx2160acex7-rev2 = "lx2160acex7 lx2160acex7_rev2"
+BOARD_TARGETS:lx2160a-cex6 = "lx2160acex6_rev2"
+BOARD_TARGETS:lx2160a-cex7 = "lx2160acex7 lx2160acex7_rev2"
+BOARD_TARGETS:lx2162a-som = "lx2162asom_rev2"

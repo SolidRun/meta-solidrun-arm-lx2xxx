@@ -24,9 +24,9 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 
 3. Initialise a build directory with example configuration files based on lx2160ardb, and appropriate shell environment variables:
 
-       source ./setup-env -m lx2160ardb-rev2 -b build_lx2160acex7-rev2
+       source ./setup-env -m lx2160ardb-rev2 -b build_lx2160a-rev2-honeycomb
 
-4. Adapt example configuration files for SolidRun LX2160A CEX7:
+4. Adapt example configuration files for SolidRun LX2160A Honeycomb:
 
    - edit `build_lx2160acex7-rev2/conf/bblayers.conf`:
 
@@ -36,11 +36,11 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 
    - edit `build_lx2160acex7/conf/local.conf`:
 
-     Set machine to `lx2160acex7-rev2`:
+     Set machine to `lx2160a-rev2-honeycomb`:
 
      ```diff
      -MACHINE ??= 'lx2160ardb-rev2'
-     +MACHINE ??= 'lx2160acex7-rev2'
+     +MACHINE ??= 'lx2160a-rev2-honeycomb'
      ```
 
    - See below for additional configuration options.
@@ -93,10 +93,14 @@ source SOURCE_THIS
 
 This Layer supports the following machines:
 
-| Machine          | Description                                                                                |
-| ---------------- | ------------------------------------------------------------------------------------------ |
-| lx2160acex7      | LX2160A COM-Express 7 on Clearfog-CX / Honeycomb LX2160A Silicon 1.0 (preview version)     |
-| lx2160acex7-rev2 | LX2160A COM-Express 7 on Clearfog-CX / Honeycomb, LX2160A Silicon 2.0 (production version) |
+| Machine                  | Description                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| lx2160a-clearfog-cx      | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 1.0 (preview version)    |
+| lx2160a-honeycomb        | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 1.0 (preview version)      |
+| lx2160a-rev2-cex6-evb    | SolidRun-internal Evaluation Board, LX2160A Silicon 2.0 (production version)   |
+| lx2160a-rev2-clearfog-cx | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 2.0 (production version) |
+| lx2160a-rev2-honeycomb   | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 2.0 (production version)   |
+| lx2162a-rev2-clearfog    | LX2162A SoM on Clearfog                                                        |
 
 ### DDR Clock
 
@@ -119,6 +123,7 @@ CPU (Cortex A72) Clock can be configured in local.conf using `LX2160A_CPU_SPEED`
 
 Bus clock can be configured in local.conf using `LX2160A_BUS_SPEED`, supported values are:
 
+- `650`
 - `700` only for LX2160A binned 2GHz and higher (default)
 - `750` (for over-clocking, or for specifically purchased 2.2GHz binned SoC)
 
