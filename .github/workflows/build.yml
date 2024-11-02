@@ -108,33 +108,55 @@ jobs:
         shell: bash {0}
         run: |
             EULA=1
-            . ./setup-env -m lx2160ardb-rev2 -b build_lx2160acex7-rev2
+            . ./setup-env -m lx2160ardb-rev2 -b build
             printf 'BBLAYERS += "%s"\n' $GITHUB_WORKSPACE/sources/meta-solidrun-arm-lx2xxx >> conf/bblayers.conf
             echo "require conf/includes/ci.conf" >> conf/local.conf
 
       - name: Download Sources (ignore errors)
         shell: bash {0}
         run: |
-            cd build_lx2160acex7-rev2
+            cd build
             source ./SOURCE_THIS
             export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
             export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
-            MACHINE=lx2160acex7-rev2 bitbake -k fsl-image-networking --runall=fetch
+            MACHINE=lx2160a-rev2-clearfog-cx bitbake -k fsl-image-networking --runall=fetch
+            MACHINE=lx2160a-rev2-honeycomb bitbake -k fsl-image-networking --runall=fetch
+            MACHINE=lx2162a-rev2-clearfog bitbake -k fsl-image-networking --runall=fetch
         continue-on-error: true
 
       - name: Build (ignore errors)
         id: build_step
         shell: bash {0}
         run: |
-            cd build_lx2160acex7-rev2
+            cd build
             source ./SOURCE_THIS
             export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
             export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
-            export MACHINE=lx2160acex7-rev2
-            bitbake -k fsl-image-networking
-            wic create lx2160a-bootimg-mmc -e fsl-image-networking
-            wic create lx2160a-bootimg-xspi -e fsl-image-networking
-            wic create lx2160a-rootimg -e fsl-image-networking
+            export IMAGE=fsl-image-networking
+            export MACHINE=lx2160a-rev2-clearfog-cx
+            bitbake -k $IMAGE
+            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
+            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
+            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
+            export MACHINE=lx2160a-rev2-honeycomb
+            bitbake -k $IMAGE
+            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
+            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
+            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
+            export MACHINE=lx2162a-rev2-clearfog
+            bitbake -k $IMAGE
+            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
+            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
+            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
         continue-on-error: true
 
       - name: Update cache on the server (build may have failed)
@@ -161,19 +183,40 @@ jobs:
       - name: Select artifacts for publishing
         shell: bash -e {0}
         run: |
+            export IMAGE=fsl-image-networking
+            export MACHINE=lx2160a-rev2-clearfog-cx
             mkdir deploy
-            DEPLOY_PATH=build_lx2160acex7-rev2/tmp/deploy/images/lx2160acex7-rev2
-            cp -L $DEPLOY_PATH/fsl-image-networking-lx2160acex7-rev2.ext2.gz deploy/
-            cp -L $DEPLOY_PATH/fsl-image-networking-lx2160acex7-rev2.manifest deploy/
-            pushd $DEPLOY_PATH; tar -cpzf device-tree.tgz freescale/*.dtb; popd
-            mv $DEPLOY_PATH/device-tree.tgz deploy/
-            cp -L $DEPLOY_PATH/Image deploy/
-            cp -L $DEPLOY_PATH/modules-lx2160acex7-rev2.tgz deploy/
-            cp build_lx2160acex7-rev2/lx2160a-bootimg-mmc.wks*.direct deploy/lx2160a-bootimg-mmc.img
-            cp build_lx2160acex7-rev2/lx2160a-bootimg-xspi.wks*.direct deploy/lx2160a-bootimg-xspi.img
-            cp build_lx2160acex7-rev2/lx2160a-rootimg.wks*.direct deploy/lx2160a-rootimg.img
-            xz -9 deploy/lx2160a-*.img
-            ls -lh deploy/
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
+            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
+            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            export MACHINE=lx2160a-rev2-honeycomb
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
+            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
+            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            export MACHINE=lx2162a-rev2-clearfog
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
+            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
+            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
+            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            xz -9 deploy/*.wic
+            ls -lh deploy/*
 
       - name: Deploy to the local minio storage
         uses: yakubique/minio-upload@v1.1.3
