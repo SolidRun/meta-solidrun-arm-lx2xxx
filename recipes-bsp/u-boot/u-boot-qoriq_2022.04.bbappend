@@ -8,6 +8,13 @@ SRC_URI += "file://0001-add-solidrun-lx2160-cex7-board-support.patch \
             file://0004-fsl-lsch3-update-calculation-of-ddr-clock-rate-to-in.patch \
             file://0005-armv8-lx2160a-enable-workaround-for-SPI-erratum-A-05.patch \
             file://0006-configs-lx2160-cex7-enable-additional-drivers.patch \
+            file://0007-cmd-tlv_eeprom-don-t-fail-boot-when-reading-eeprom-f.patch \
+            file://0008-board-solidrun-lx2160-cex7-fixup-u-boot-dts-dpmac-by.patch \
+            file://0009-board-solidrun-lx2160acex7-enable-reading-tlv-eeprom.patch \
+            file://0010-board-solidrun-lx2160acex7-disable-second-usb-on-lx2.patch \
+            file://0011-board-solidrun-lx2160acex7-allocate-memory-before-pa.patch \
+            file://0012-cmd-tlv_eeprom-support-specifying-tlv-eeprom-in-DT-a.patch \
+            file://0013-board-solidrun-lx2160acex7-use-dt-alias-for-tlv-eepr.patch \
 "
 
 # Override default fdtfile for boards without dedicated uboot config
