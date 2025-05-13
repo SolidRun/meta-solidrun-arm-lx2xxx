@@ -18,6 +18,12 @@ SRC_URI += "file://0001-add-configuration-solidrun-lx2160a-cex-7-on-clearfog.pat
             file://0014-lx2162aqds-re-enable-dpmac11.patch \
             file://0015-add-configuration-for-lx2162a-som-and-clearfog-evalu.patch \
             file://0016-lx2160acex7-clearfog-cx-add-configuration-for-serdes.patch \
+            file://0017-lx2160acex7-add-configuration-for-serdes-1-protocol-.patch \
+            file://0018-solidrun-add-script-generating-configs-from-template.patch \
+            file://0019-lx2160acex7-clearfog-cx-add-configuration-for-serdes.patch \
+            file://0020-lx2160acex6-add-configuration-for-each-ddr-speed.patch \
+            file://0021-lx2162asom-add-configuration-for-serdes-1-protocol-2.patch \
+            file://0022-lx2160acex7-clearfog-cx-add-configuration-for-serdes.patch \
 "
 
 BOARD_TARGETS:lx2160a-cex6 = "lx2160acex6_rev2"

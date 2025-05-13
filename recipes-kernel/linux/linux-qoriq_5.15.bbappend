@@ -27,6 +27,18 @@ SRC_URI += "file://0001-arm64-dts-lx2160a-cex7-add-gpio-hog-for-fan-controll.pat
             file://0023-arm64-dts-lx2162-clearfog-add-description-for-retime.patch \
             file://0024-arm64-dts-lx2160a-clearfog-itx-set-fixed-link-for-qs.patch \
             file://0025-arm64-dts-lx2160a-clearfog-cx-add-description-for-re.patch \
+            file://0026-net-phy-ds250dfx10-add-support-for-1Gbps-SGMII-data-.patch \
+            file://0027-serial-pl011-support-for-dynamic-configuration-on-lx.patch \
+            file://0028-Revert-phy-lynx-28g-add-support-for-specifying-unman.patch \
+            file://0029-device-property-add-function-to-lookup-a-string-from.patch \
+            file://0030-phy-lynx-28g-add-support-for-device-tree-per-lane-ph.patch \
+            file://0031-arm64-dts-lx2160a-cex6-evb-replace-fsl-unmanaged-lan.patch \
+            file://0032-phy-lynx-28g-add-preprocessor-macros-for-tx-equaliza.patch \
+            file://0033-phy-lynx-28g-set-lane-tx-equalization-register-1-def.patch \
+            file://0034-phy-lynx-28g-add-support-for-per-lane-and-protocol-e.patch \
+            file://0035-arm64-dts-lx2160a-add-serdes-phy-sub-nodes-for-each-.patch \
+            file://0036-arm64-dts-lx2160a-cex6-evb-define-serdes-1-lane-G-eq.patch \
+            file://0037-net-phy-marvell10g-fix-88e2580-mac-type-register-acc.patch \
 "
 
 # Enable non-default kernel configs

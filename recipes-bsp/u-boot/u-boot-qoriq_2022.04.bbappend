@@ -15,6 +15,7 @@ SRC_URI += "file://0001-add-solidrun-lx2160-cex7-board-support.patch \
             file://0011-board-solidrun-lx2160acex7-allocate-memory-before-pa.patch \
             file://0012-cmd-tlv_eeprom-support-specifying-tlv-eeprom-in-DT-a.patch \
             file://0013-board-solidrun-lx2160acex7-use-dt-alias-for-tlv-eepr.patch \
+            file://0014-cmd-tlv_eeprom-fix-alias-access-to-second-eeprom.patch \
 "
 
 # Override default fdtfile for boards without dedicated uboot config

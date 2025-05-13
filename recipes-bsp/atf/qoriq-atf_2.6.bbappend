@@ -16,6 +16,14 @@ SRC_URI += "file://0001-plat-nxp-lx2160a-auto-boot.patch \
             file://0012-plat-lx2160a-fix-building-without-NXP_NV_SW_MAINT_LA.patch \
             file://0013-plat-lx2160a-fix-boot-without-spi-flash-disable-non-.patch \
             file://0014-add-separate-platform-for-solidrun-lx2162a-som.patch \
+            file://0015-lx2160acex6-add-ddr-configuration-for-pcb-v1.2-with-.patch \
+            file://0016-nxp-ddr-add-debug-output-for-dimm-parameters-parsed-.patch \
+            file://0017-lx2160acex6-fix-dq-mapping-and-remove-invalid-spd-ee.patch \
+            file://0018-nxp-ddr-dump-SPD-EEPROM-content-on-debug-builds.patch \
+            file://0019-nxp-ddr-disarm-error-when-using-non-identical-DIMMs.patch \
+            file://0020-plat-nxp-layerscape-mmap-dynamic-configuration-regio.patch \
+            file://0021-lx2160a-fix-i2c-bus-flushing-glitch.patch \
+            file://0022-lx2160a-fix-i2c-bus-flushing-pinmux-memory-writes.patch \
 "
 
 PLATFORM:lx2160a-cex6 = "lx2160acex6"
