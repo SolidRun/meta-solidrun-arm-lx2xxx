@@ -18,7 +18,7 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 
       ```
       pushd sources/poky
-      git am ../../meta-solidrun-arm-lx2xxx/patches/poky/0001-wic-add-supppport-for-generating-images-without-part.patch
+      git am ../meta-solidrun-arm-lx2xxx/patches/poky/0001-wic-add-supppport-for-generating-images-without-part.patch
       popd
       ```
 
