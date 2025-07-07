@@ -39,6 +39,7 @@ SRC_URI += "file://0001-arm64-dts-lx2160a-cex7-add-gpio-hog-for-fan-controll.pat
             file://0035-arm64-dts-lx2160a-add-serdes-phy-sub-nodes-for-each-.patch \
             file://0036-arm64-dts-lx2160a-cex6-evb-define-serdes-1-lane-G-eq.patch \
             file://0037-net-phy-marvell10g-fix-88e2580-mac-type-register-acc.patch \
+            file://0038-net-dpaa2-never-power-off-serdes-phy.patch \
 "
 
 # Enable non-default kernel configs
@@ -46,13 +47,22 @@ SRC_URI:append = " file://amdgpu.scc"
 SRC_URI:append = " file://lx2160acex6-drivers.scc"
 SRC_URI:append = " file://lx2160acex7-clearfog-cx-drivers.scc"
 SRC_URI:append = " file://lx2162asom-clearfog-drivers.scc"
+SRC_URI:append = " file://pktgen.scc"
+SRC_URI:append = " file://nftables-full.scc"
+SRC_URI:append = " file://docker.scc"
 
 # linux-qoriq_5.15.bb does not support scc style fragments, add to DELTA_KERNEL_DEFCONFIG instead.
 SRC_URI:append = " file://amdgpu.cfg"
 SRC_URI:append = " file://lx2160acex6-drivers.cfg"
 SRC_URI:append = " file://lx2160acex7-clearfog-cx-drivers.cfg"
 SRC_URI:append = " file://lx2162asom-clearfog-drivers.cfg"
+SRC_URI:append = " file://pktgen.cfg"
+SRC_URI:append = " file://nftables-full.cfg"
+SRC_URI:append = " file://docker.cfg"
 DELTA_KERNEL_DEFCONFIG:append = " amdgpu.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " lx2160acex6-drivers.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " lx2160acex7-clearfog-cx-drivers.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " lx2162asom-clearfog-drivers.cfg "
+DELTA_KERNEL_DEFCONFIG:append = " pktgen.cfg "
+DELTA_KERNEL_DEFCONFIG:append = " nftables-full.cfg "
+DELTA_KERNEL_DEFCONFIG:append = " docker.cfg "

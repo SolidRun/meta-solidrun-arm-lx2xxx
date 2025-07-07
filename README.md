@@ -167,7 +167,76 @@ Yocto uninative package can be updated for glibc-2.40 by cherry-picking a few co
 Cache must also be cleared before the next build can succeed:
 
     cd bsp/build
-    rm -rf tmp sstate-cache cache
+    rm -rf tmp ../sstate-cache cache
+
+### permission error in disable_network
+
+Bitbake can fail with a confusing permission error while trying to disable it's child processes network access:
+
+```
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (virtual:native:/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/meta/recipes-devtools/autoconf/autoconf_2.72e.bb:do_unpack) failed with exit code '1'
+```
+
+See [Ubuntu Bug 2056555](https://bugs.launchpad.net/ubuntu/+source/apparmor/+bug/2056555) for more details.
+
+As a workaround apparmor "unprivileged_userns" profile can be temporarily disabled:
+
+    sudo apparmor_parser -R /etc/apparmor.d/unprivileged_userns
+
+### libxcrypt fails to build with host perl >= 5.38
+
+Build of libxcrypt may fail with the error below:
+
+```
+| when is deprecated at /opt/workspace/YOCTO/v2x-kirkstone/bsp/build/tmp/work/armv8a-poky-linux/libxcrypt/4.4.28-r0/git/build-aux/scripts/BuildCommon.pm line 522.
+| Compilation failed in require at ../git/build-aux/scripts/expand-selected-hashes line 28.
+| BEGIN failed--compilation aborted at ../git/build-aux/scripts/expand-selected-hashes line 28.
+| configure: error: bad value 'all' for --enable-hashes
+| NOTE: The following config.log files may provide further information.
+| NOTE: /opt/workspace/YOCTO/v2x-kirkstone/bsp/build/tmp/work/armv8a-poky-linux/libxcrypt/4.4.28-r0/build/config.log
+| ERROR: configure failed
+| WARNING: exit code 1 from a shell c
+
+```
+
+As a workaround a patch may be applied at `sources/poky` from the Yocto Mailing-list: [kirkstone-libxcrypt-fix-build-with-perl-5.38-and-use-master-branch.patch](https://patchwork.yoctoproject.org/project/oe-core/patch/20230726131331.2239727-1-Martin.Jansa@gmail.com/mbox/)
+
+```
+pushd sources/poky
+git cherry-pick 2e4bdbc5c4330b3eeef14679166a5d908423ecd6
+# solve conflicts
+popd
+```
+
+### Build errors in libdnf-native / rust-llvm / ccache on Ubuntu 24.04
+
+The newer versions of compilers and standard libraries on Ubuntu 24.04 are causing several toolchain packages to fail their build.
+
+As a workaround install the Yocto `buildtools-extended` providing tested versions:
+
+    pushd sources/poky
+    ./scripts/install-buildtools \
+    	--with-extended-buildtools \
+    	--release yocto-4.0.27 \
+    	--installer-version 4.0.27
+    popd
+
+Activate the buildtools in current shell:
+
+    source sources/poky/buildtools/environment-setup-x86_64-pokysdk-linux
+
+When using buildtools on ubuntu 24.04, also apply the workaround described above updating uninative.
 
 ## Maintainer Notes
 
