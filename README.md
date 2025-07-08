@@ -102,6 +102,15 @@ This Layer supports the following machines:
 | lx2160a-rev2-honeycomb   | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 2.0 (production version)   |
 | lx2162a-rev2-clearfog    | LX2162A SoM on Clearfog                                                        |
 
+### Supported Images
+
+This Layer supports the following images:
+
+| Image                     | Description                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| fsl-image-networking      | Typical networking features and basic cli utilities                            |
+| fsl-image-networking-full | Demo of all packages tested by NXP including dpdk, dpdk examples and vpp       |
+
 ### DDR Clock
 
 DDR Clock can be configured in local.conf using `LX2160A_DDR_SPEED`, supported values are:
