@@ -4,6 +4,7 @@
 #@DESCRIPTION: Machine configuration for SolidRun LX2162A Rev 2.0 System on Module
 
 require conf/machine/include/qoriq-arm64.inc
+DEFAULTTUNE ?= "cortexa72-crypto"
 require conf/machine/include/arm/armv8a/tune-cortexa72.inc
 
 MACHINEOVERRIDES =. "lx2162a-som:fsl-lsch3:lx2162a:"

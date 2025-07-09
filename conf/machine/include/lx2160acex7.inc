@@ -4,6 +4,7 @@
 #@DESCRIPTION: Machine configuration for SolidRun LX2160A Rev 1.0 COM-Express Type 7 Module
 
 require conf/machine/include/qoriq-arm64.inc
+DEFAULTTUNE ?= "cortexa72-crypto"
 require conf/machine/include/arm/armv8a/tune-cortexa72.inc
 
 MACHINEOVERRIDES =. "lx2160a-cex7:fsl-lsch3:lx2160a:"
