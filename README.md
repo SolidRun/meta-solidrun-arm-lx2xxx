@@ -7,9 +7,9 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 1. download the build recipes:
 
    ```
-   repo init -u https://github.com/nxp-qoriq/yocto-sdk.git -b kirkstone -m ls-5.15.71-2.2.0.xml
+   repo init -u https://github.com/nxp-qoriq/yocto-sdk.git -b scarthgap -m ls-6.6.52-2.2.0.xml
    repo sync
-   git clone -b kirkstone https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git sources/meta-solidrun-arm-lx2xxx
+   git clone -b scarthgap https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git sources/meta-solidrun-arm-lx2xxx
    ```
 
 2. apply downstream patches to dependent layers:
@@ -152,104 +152,9 @@ Additional configurations are added by patching `mc-utils` package and adding fi
 
 ## Known Issues
 
-## Failed to spawn fakeroot worker: [Errno 32] Broken pipe
-
-On systems with glibc newer than 2.36 builds will fail when either:
-
-- libfakeroot had been built against glibc later than 2.36
-- host system glibc is later than 2.36
-
-Yocto uninative package can be updated for glibc-2.40 by cherry-picking a few commits from yocto kirkstone branch into NXPs BSP:
-
-    cd bsp/sources/poky
-    git cherry-pick 2890968bbce028efc47a19213f4eff2ccaf7b979
-    git cherry-pick bba090696873805e44b1f7b3278ef8369763a176
-    git cherry-pick aab6fc20de9473d8d7f277332601cbae70c53320
-    git cherry-pick 43b94d2b8496eae6e512c6deb291b5908b7ada47
-    git cherry-pick b8fded3df36ab206eaf3bc25b75acda2544679c5
-    git cherry-pick b4b545cd9d3905253c398a6a42a9bc13c42073be
-    git cherry-pick ad9420b072896b6a58a571c8123bcb17a813a1e7
-    git cherry-pick 529c7c30e6a1b7e1e8a5ba5ba70b8f2f2af770ec
-    git cherry-pick b36affbe96b2f9063f75e11f64f5a8ead1cb5c55
-    git cherry-pick 8190d9c754c9c3a1962123e1e86d99de96c1224c
-
-Cache must also be cleared before the next build can succeed:
-
-    cd bsp/build
-    rm -rf tmp ../sstate-cache cache
-
-### permission error in disable_network
-
-Bitbake can fail with a confusing permission error while trying to disable it's child processes network access:
-
-```
-ERROR: PermissionError: [Errno 1] Operation not permitted
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/bitbake/bin/bitbake-worker", line 278, in child
-    bb.utils.disable_network(uid, gid)
-  File "/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
-    with open("/proc/self/uid_map", "w") as f:
-PermissionError: [Errno 1] Operation not permitted
-
-ERROR: Task (virtual:native:/opt/workspace/YOCTO/imx8-scarthgap/sources/poky/meta/recipes-devtools/autoconf/autoconf_2.72e.bb:do_unpack) failed with exit code '1'
-```
-
-See [Ubuntu Bug 2056555](https://bugs.launchpad.net/ubuntu/+source/apparmor/+bug/2056555) for more details.
-
-As a workaround apparmor "unprivileged_userns" profile can be temporarily disabled:
-
-    sudo apparmor_parser -R /etc/apparmor.d/unprivileged_userns
-
-### libxcrypt fails to build with host perl >= 5.38
-
-Build of libxcrypt may fail with the error below:
-
-```
-| when is deprecated at /opt/workspace/YOCTO/v2x-kirkstone/bsp/build/tmp/work/armv8a-poky-linux/libxcrypt/4.4.28-r0/git/build-aux/scripts/BuildCommon.pm line 522.
-| Compilation failed in require at ../git/build-aux/scripts/expand-selected-hashes line 28.
-| BEGIN failed--compilation aborted at ../git/build-aux/scripts/expand-selected-hashes line 28.
-| configure: error: bad value 'all' for --enable-hashes
-| NOTE: The following config.log files may provide further information.
-| NOTE: /opt/workspace/YOCTO/v2x-kirkstone/bsp/build/tmp/work/armv8a-poky-linux/libxcrypt/4.4.28-r0/build/config.log
-| ERROR: configure failed
-| WARNING: exit code 1 from a shell c
-
-```
-
-As a workaround a patch may be applied at `sources/poky` from the Yocto Mailing-list: [kirkstone-libxcrypt-fix-build-with-perl-5.38-and-use-master-branch.patch](https://patchwork.yoctoproject.org/project/oe-core/patch/20230726131331.2239727-1-Martin.Jansa@gmail.com/mbox/)
-
-```
-pushd sources/poky
-git cherry-pick 2e4bdbc5c4330b3eeef14679166a5d908423ecd6
-# solve conflicts
-popd
-```
-
-### Build errors in libdnf-native / rust-llvm / ccache on Ubuntu 24.04
-
-The newer versions of compilers and standard libraries on Ubuntu 24.04 are causing several toolchain packages to fail their build.
-
-As a workaround install the Yocto `buildtools-extended` providing tested versions:
-
-    pushd sources/poky
-    ./scripts/install-buildtools \
-    	--with-extended-buildtools \
-    	--release yocto-4.0.27 \
-    	--installer-version 4.0.27
-    popd
-
-Activate the buildtools in current shell:
-
-    source sources/poky/buildtools/environment-setup-x86_64-pokysdk-linux
-
-When using buildtools on ubuntu 24.04, also apply the workaround described above updating uninative.
-
 ## Maintainer Notes
 
 ### Patching Linux / U-Boot / ATF / RCW / DPL / DPC / etc.:
 
-Development is done in [lx2160a_build: branch "develop-ls-5.15.71-2.2.0"](https://github.com/SolidRun/lx2160a_build/tree/develop-ls-5.15.71-2.2.0) first, it serves as the reference BSP for HW validation.
+Development is done in [lx2160a_build: branch "develop-ls-6.6.52-2.2.0"](https://github.com/SolidRun/lx2160a_build/tree/develop-ls-6.6.52-2.2.0) first, it serves as the reference BSP for HW validation.
 Patches should be copied without changes from lx2160a_build to this layer.

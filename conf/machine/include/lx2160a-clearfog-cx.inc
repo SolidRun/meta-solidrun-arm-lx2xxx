@@ -3,6 +3,12 @@ KERNEL_DEVICETREE ?= " \
 	freescale/fsl-lx2160a-clearfog-cx.dtb \
 	freescale/fsl-lx2160a-honeycomb.dtb \
 "
+# HACK: place copy of kernel dtb in vendor subfolder as expected by u-boot
+IMAGE_BOOT_FILES:append = " \
+    fsl-lx2160a-clearfog-cx.dtb;freescale/fsl-lx2160a-clearfog-cx.dtb \
+    fsl-lx2160a-honeycomb.dtb;freescale/fsl-lx2160a-honeycomb.dtb \
+"
+IMAGE_BOOT_FILES:remove = "${KERNEL_DEVICETREE}"
 
 # select DPL/DPC (config/lx2160a/LX2160A-<MC_FLAVOUR>/<DPL/DPC>)
 # variable consumed in wks files
