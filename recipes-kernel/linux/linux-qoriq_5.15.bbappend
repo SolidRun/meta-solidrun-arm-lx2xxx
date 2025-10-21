@@ -40,6 +40,10 @@ SRC_URI += "file://0001-arm64-dts-lx2160a-cex7-add-gpio-hog-for-fan-controll.pat
             file://0036-arm64-dts-lx2160a-cex6-evb-define-serdes-1-lane-G-eq.patch \
             file://0037-net-phy-marvell10g-fix-88e2580-mac-type-register-acc.patch \
             file://0038-net-dpaa2-never-power-off-serdes-phy.patch \
+            file://0039-phy-lynx-28g-configure-tx-adaptive-equalization-regi.patch \
+            file://0040-net-phylink-extend-phylink_mii_c45_pcs_get_state-als.patch \
+            file://0041-net-pcs-lynx-extend-support-to-also-handle-PHY_INTER.patch \
+            file://0042-net-sfp-support-25G-long-range-modules-extended-comp.patch \
 "
 
 # Enable non-default kernel configs
