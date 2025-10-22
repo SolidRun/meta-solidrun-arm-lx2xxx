@@ -1,0 +1,80 @@
+From 748832f28c1fda0e94949901bf0597fb46f2a361 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Wed, 22 Oct 2025 22:26:35 +0200
+Subject: [PATCH 1/2] vlib: unix: fix plugin loading error messages
+
+PLUGIN_LOG_ERR messages do nto actually show up in vpp.log or syslog
+regardless of configured log-levels.
+This makes it extrem,ely hard to diagnose symbol errors preventing
+plugins from loading.
+
+Replace those relevant errors by printf to ensure they show up.
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ src/vlib/unix/plugin.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/vlib/unix/plugin.c b/src/vlib/unix/plugin.c
+index 891e2cb64..75f92b6ad 100644
+--- a/src/vlib/unix/plugin.c
++++ b/src/vlib/unix/plugin.c
+@@ -245,7 +245,7 @@ process_reg:
+       (strncmp (vlib_plugin_app_version, version_required,
+ 		strlen (version_required))))
+     {
+-      PLUGIN_LOG_ERR ("Plugin %s version mismatch: %s != %s",
++      printf ("Plugin %s version mismatch: %s != %s\n",
+ 		      pi->name, vlib_plugin_app_version,
+ 		      reg->version_required);
+       if (!(pc && pc->skip_version_check == 1))
+@@ -309,8 +309,8 @@ process_reg:
+ 
+   if (handle == 0)
+     {
+-      PLUGIN_LOG_ERR ("%s", dlerror ());
+-      PLUGIN_LOG_ERR ("Failed to load plugin '%s'", pi->name);
++      printf ("%s\n", dlerror ());
++      printf ("Failed to load plugin '%s'\n", pi->name);
+       goto error;
+     }
+ 
+@@ -337,7 +337,7 @@ process_reg:
+ 	    {
+ 	      u8 *err = format (0, "%s: %U%c", pi->name,
+ 				format_clib_error, error, 0);
+-	      PLUGIN_LOG_ERR ((char *) err);
++	      puts ((char *) err);
+ 	      clib_error_free (error);
+ 	      dlclose (pi->handle);
+ 	      pi->handle = 0;
+@@ -345,14 +345,14 @@ process_reg:
+ 	    }
+ 	}
+       else
+-	PLUGIN_LOG_ERR ("Plugin %s: early init function %s set but not found",
++	printf ("Plugin %s: early init function %s set but not found\n",
+ 			(char *) pi->name, reg->early_init);
+     }
+ 
+   if (reg->description)
+-    PLUGIN_LOG_NOTICE ("Loaded plugin: %s (%s)", pi->name, reg->description);
++    printf ("Loaded plugin: %s (%s)\n", pi->name, reg->description);
+   else
+-    PLUGIN_LOG_NOTICE ("Loaded plugin: %s", pi->name);
++    printf ("Loaded plugin: %s\n", pi->name);
+ 
+   vec_free (data);
+   elf_main_free (&em);
+@@ -601,7 +601,7 @@ vlib_plugin_early_init (vlib_main_t * vm)
+ 
+   pm->plugin_path = format (pm->plugin_path, "%c", 0);
+ 
+-  PLUGIN_LOG_DBG ("plugin path %s", pm->plugin_path);
++  PLUGIN_LOG_ERR ("plugin path %s", pm->plugin_path);
+ 
+   pm->plugin_by_name_hash = hash_create_string (0, sizeof (uword));
+   pm->plugin_overrides_by_name_hash = hash_create_string (0, sizeof (uword));
+-- 
+2.51.0
+
