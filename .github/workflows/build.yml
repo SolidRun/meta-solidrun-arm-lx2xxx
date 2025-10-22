@@ -144,6 +144,7 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
+            ls -lh tmp/deploy/images/$MACHINE
             export MACHINE=lx2160a-rev2-honeycomb
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
@@ -155,6 +156,7 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
+            ls -lh tmp/deploy/images/$MACHINE
             export MACHINE=lx2162a-rev2-clearfog
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
@@ -166,6 +168,13 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
+            ls -lh tmp/deploy/images/$MACHINE
+            export MACHINE=lx2160a-rev2-clearfog-cx
+            bitbake -k vpp-oci-image
+            ln -sv tmp/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs-oci.tar vpp-oci-image-lx216x.rootfs-oci.tar
+            ln -sv tmp/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs.manifest vpp-oci-image-lx216x.rootfs.manifest
+            ls -lh tmp/deploy/images/$MACHINE
+            ls -lh
         continue-on-error: true
 
       - name: Update cache on the server (build may have failed)
@@ -224,6 +233,7 @@ jobs:
             cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
             cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
+            cp -L build/vpp-oci-image-lx216x.rootfs-oci.tar build/vpp-oci-image-lx216x.rootfs.manifest deploy
             xz -9 deploy/*.wic
             ls -lh deploy/*
 

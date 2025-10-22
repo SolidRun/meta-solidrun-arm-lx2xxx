@@ -1,0 +1,1 @@
+DOCKER_PKGS =+ " skopeo "
