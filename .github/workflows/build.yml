@@ -135,28 +135,37 @@ jobs:
             export IMAGE=fsl-image-networking-full
             export MACHINE=lx2160a-rev2-clearfog-cx
             bitbake -k $IMAGE
-            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
-            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-mmc.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
-            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-xspi.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
             export MACHINE=lx2160a-rev2-honeycomb
             bitbake -k $IMAGE
-            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
-            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-mmc.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
-            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-xspi.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
             export MACHINE=lx2162a-rev2-clearfog
             bitbake -k $IMAGE
-            wic create -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
-            wic create -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-mmc.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-bootimg-xspi -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct $IMAGE-$MACHINE-bootimg-xspi.wic
-            wic create -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
+            ln -sv wic-$MACHINE/lx2160a-bootimg-xspi.wks*.direct.bmap $IMAGE-$MACHINE-bootimg-xspi.wic.bmap
+            wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
+            ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
         continue-on-error: true
 
       - name: Update cache on the server (build may have failed)
@@ -192,9 +201,9 @@ jobs:
             mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
             cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
             cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
-            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
             export MACHINE=lx2160a-rev2-honeycomb
             cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
             cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
@@ -202,9 +211,9 @@ jobs:
             mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
             cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
             cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
-            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
             export MACHINE=lx2162a-rev2-clearfog
             cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
             cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
@@ -212,9 +221,9 @@ jobs:
             mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
             cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
             cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic deploy
-            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic deploy
-            cp -L build/$IMAGE-$MACHINE-rootimg.wic deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
+            cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
             xz -9 deploy/*.wic
             ls -lh deploy/*
 

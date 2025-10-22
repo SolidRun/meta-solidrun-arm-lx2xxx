@@ -59,7 +59,7 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 
    - SD-Card / eMMC (includes rootfs):
 
-         wic create lx2160a-bootimg-mmc -e fsl-image-networking
+         wic create -m lx2160a-bootimg-mmc -e fsl-image-networking
 
      This generates a bootable disk image named `lx2160a-bootimg-mmc.wks-<timestamp>-mmcblk.direct` that is suitable
      for writing to SD-Card or eMMC data partition, from the previously built `fsl-image-networking` target.
@@ -73,7 +73,7 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 
    - SD-Card / eMMC / USB / SATA / NVMe (rootfs only):
 
-         wic create lx2160a-rootimg -e fsl-image-networking
+         wic create -m lx2160a-rootimg -e fsl-image-networking
 
      This generates a bootable disk image named `lx2160a-rootimg.wks-<timestamp>-mmcblk.direct` that is suitable
      for writing to any block storage, from the previously built `fsl-image-networking`.
