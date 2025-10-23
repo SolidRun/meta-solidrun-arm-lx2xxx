@@ -1,0 +1,41 @@
+From 0cfc1275f104a35168395d399a2a9476033d7a2c Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Thu, 23 Oct 2025 14:19:15 +0200
+Subject: [PATCH] add dpdk linker flags zlib and libpcap
+
+dpdk may link against zlib and libpcap, leading to linker errors in
+example and perf app - since those Makefiles did not search ldflags from
+pkg-config.
+
+Add the missing libs ...
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ apps/example/Makefile.in | 1 +
+ apps/perf/Makefile.in    | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/apps/example/Makefile.in b/apps/example/Makefile.in
+index fab9a584..012ce109 100644
+--- a/apps/example/Makefile.in
++++ b/apps/example/Makefile.in
+@@ -49,6 +49,7 @@ endif
+ ifeq ($(DPDK),1)
+ DPDK_MACHINE_LINKER_FLAGS=$${RTE_SDK}/$${RTE_TARGET}/lib/ldflags.txt
+ LDFLAGS+=-L@DPDKLIBPATH@/lib
++LDFLAGS+=-lz -lpcap
+ LIBS += -g -O3 -pthread -lrt -march=native ${MTCP_FLD}/lib/libmtcp.a -lnuma -lmtcp -lpthread -lrt -lm -latomic -ldl -lgmp -Wl,--whole-archive -ldpdk -Wl,--no-whole-archive ${LDFLAGS}
+ endif
+ 
+diff --git a/apps/perf/Makefile.in b/apps/perf/Makefile.in
+index 89299b48..8c5b4109 100644
+--- a/apps/perf/Makefile.in
++++ b/apps/perf/Makefile.in
+@@ -49,6 +49,7 @@ endif
+ ifeq ($(DPDK),1)
+ DPDK_MACHINE_LINKER_FLAGS=$${RTE_SDK}/$${RTE_TARGET}/lib/ldflags.txt
+ LDFLAGS+=-L@DPDKLIBPATH@/lib
++LDFLAGS+=-lz -lpcap
+ LIBS += -g -O3 -pthread -lrt -march=native ${MTCP_FLD}/lib/libmtcp.a -lnuma -lmtcp -lpthread -lrt -lm -latomic -ldl -lgmp -Wl,--whole-archive -ldpdk -Wl,--no-whole-archive  ${LDFLAGS}
+ endif
+ 
