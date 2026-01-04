@@ -40,13 +40,18 @@ SRC_URI += "file://0001-pci-ls_pcie_g4-Wait-100ms-for-Link-Up-in-ls_pcie_g4_.pat
             file://0036-cmd-ds250dfx10-change-eye-diagram-commabd-behaviour.patch \
 "
 
-# Override default fdtfile for boards without dedicated uboot config
-SRC_URI:append:lx2160a-rev2-cex6-evb = " file://lx2160acex6-evb-fdtfile.cfg"
-SRC_URI:append:lx2160a-honeycomb = " file://lx2160acex7-honeycomb-fdtfile.cfg"
-SRC_URI:append:lx2160a-rev2-honeycomb = " file://lx2160acex7-honeycomb-fdtfile.cfg"
-SRC_URI:append:lx2162a-rev2-clearfog = " file://lx2162asom-clearfog-fdtfile.cfg"
-
-# do_configure step requires merge_config.sh in the path, provided by kern-tools-native package.
-# While poky/meta/recipes-bsp/u-boot/u-boot-configure.inc lists this dependency, it is missing a space and does not take effect.
-# Repeat dependency here surrounded by spaces.
-DEPENDS:append = " kern-tools-native "
+do_configure:append() {
+    # apply solidrun build-time options
+    for umachine in ${UBOOT_MACHINE}; do
+        if [ -n "${UBOOT_FDT}" ]; then
+            printf "CONFIG_DEFAULT_DEVICE_TREE=\"%s\"\n" "${UBOOT_FDT}" >> ${B}/$umachine/.config
+        fi
+        if [ -n "${UBOOT_FDT_FILE}" ]; then
+            printf "CONFIG_DEFAULT_FDT_FILE=\"%s\"\n" "${UBOOT_FDT_FILE}" >> ${B}/$umachine/.config
+        fi
+        if [ -n "${UBOOT_ETHPRIME}" ]; then
+            printf "CONFIG_ETHPRIME=\"%s\"\n" "${UBOOT_ETHPRIME}" >> ${B}/$umachine/.config
+        fi
+        oe_runmake -C ${S} O=${B}/${umachine} oldconfig
+    done
+}

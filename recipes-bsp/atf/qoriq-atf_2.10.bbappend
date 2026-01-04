@@ -23,6 +23,8 @@ SRC_URI += "file://0001-fiptool-disable-pedantic-flag-to-avoid-errors-with-o.pat
             file://0016-psci-add-build-time-flag-to-disable-SYSTEM_OFF-funct.patch \
 "
 
-PLATFORM:lx2162a-som = "lx2162asom"
-PLATFORM:lx2160a-cex6 = "lx2160acex6"
-PLATFORM:lx2160a-cex7 = "lx2160acex7"
+# set PLATFORM recipe variable from generic machine config ATF_PLATFORM if defined
+PLATFORM = "${@d.getVar('ATF_PLATFORM') or d.getVar('MACHINE')}"
+
+# extra solidrun build-time options
+EXTRA_OEMAKE += " DISABLE_S5=${@d.getVar('ATF_DISABLE_S5') or '0'} "

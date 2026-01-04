@@ -18,6 +18,13 @@ SRC_URI += "file://0001-arm64-dts-freescale-Add-support-for-LX2162-SoM-Clear.pat
             file://0014-arm64-dts-lx2160a-extend-32-bit-and-add-16-64-bit-pc.patch \
             file://0015-driver-core-release-resources-to-fix-standalone-dpaa.patch \
             file://0016-firmware-psci-issue-hard-reset-if-poweroff-fails.patch \
+            file://0017-arm64-dts-lx2162a-clearfog-set-sfp-connector-leds-fu.patch \
+            file://0018-Revert-driver-core-release-resources-to-fix-standalo.patch \
+            file://0019-driver-core-print-name-of-bound-resources-preventing.patch \
+            file://0020-net-dpaa2-mac-fully-release-dpmac-resources-on-dpni-.patch \
+            file://0021-arm64-dts-fsl-lx2162a-sr-som-add-crypto-rtc-aliases-.patch \
+            file://0022-arm64-dts-fsl-lx2160a-cex7-add-rtc-alias.patch \
+            file://0023-arm64-dts-add-description-for-lx2160a-cex7-on-half-t.patch \
 "
 
 # Enable non-default kernel configs
