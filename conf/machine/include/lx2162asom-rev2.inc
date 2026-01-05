@@ -3,7 +3,7 @@
 #@SOC: LSCH3
 #@DESCRIPTION: Machine configuration for SolidRun LX2162A Rev 2.0 System on Module
 
-MACHINEOVERRIDES =. "lx2162a-som:"
+MACHINEOVERRIDES =. "lx2162a-som:fsl-lsch3:lx2162a:"
 
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"
@@ -28,6 +28,3 @@ MC_FLAVOUR ?= "SOM"
 # select rev2 rcw
 RCW_FOLDER ?= "lx2162asom_rev2"
 RCW_BOARDS ?= "lx2162asom_rev2"
-
-# generate sd-bootable wic image
-WKS_FILE ?= "lx2160a-bootimg-mmc.wks.in"

@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable Drivers for SolidRun LX2162A SoM Clearfog Board"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware lx2162asom-clearfog-drivers.cfg

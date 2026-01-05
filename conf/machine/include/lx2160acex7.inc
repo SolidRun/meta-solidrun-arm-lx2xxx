@@ -3,7 +3,7 @@
 #@SOC: LSCH3
 #@DESCRIPTION: Machine configuration for SolidRun LX2160A Rev 1.0 COM-Express Type 7 Module
 
-MACHINEOVERRIDES =. "lx2160a-cex7:"
+MACHINEOVERRIDES =. "lx2160a-cex7:fsl-lsch3:lx2160a:"
 
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"
@@ -27,6 +27,3 @@ MC_FLAVOUR ?= "CEX7"
 
 RCW_FOLDER ?= "lx2160acex7"
 RCW_BOARDS ?= "lx2160acex7 lx2160acex7_rev2"
-
-# generate sd-bootable wic image
-WKS_FILE ?= "lx2160a-bootimg-mmc.wks.in"

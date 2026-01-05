@@ -3,7 +3,7 @@
 #@SOC: LSCH3
 #@DESCRIPTION: Machine configuration for SolidRun Internal LX2160A Rev 2.0 COM-Express Type 6 Module
 
-MACHINEOVERRIDES =. "lx2160a-cex6:"
+MACHINEOVERRIDES =. "lx2160a-cex6:fsl-lsch3:lx2160a:"
 
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"
@@ -28,6 +28,3 @@ MC_FLAVOUR ?= "CEX6"
 # select rev2 rcw
 RCW_FOLDER ?= "lx2160acex6_rev2"
 RCW_BOARDS ?= "lx2160acex6_rev2"
-
-# generate sd-bootable wic image
-WKS_FILE ?= "lx2160a-bootimg-mmc.wks.in"

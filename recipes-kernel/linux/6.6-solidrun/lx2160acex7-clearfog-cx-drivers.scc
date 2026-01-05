@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable Drivers for SolidRun LX2160A CEX7 Clearfog-CX Board"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware lx2160acex7-clearfog-cx-drivers.cfg

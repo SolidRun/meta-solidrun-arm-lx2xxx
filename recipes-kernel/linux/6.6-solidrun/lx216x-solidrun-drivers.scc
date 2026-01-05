@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable Drivers for SolidRun LX2160A & LX2162A Boards"
+define KFEATURE_COMPATIBILITY board
+
+kconf hardware lx216x-solidrun-drivers.cfg

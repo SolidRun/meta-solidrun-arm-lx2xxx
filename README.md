@@ -91,7 +91,6 @@ This Layer supports the following images:
 This layer can generate a range of image types by `WKS_FILE` in local.conf:
 
 - `lx2160a-bootimg-mmc.wks.in` (default): Bootloader & Kernel & RootFS, for SD or eMMC.
-- `lx2160a-bootimg-xspi.wks.in`: Bootloader only, for SPI Flash.
 - `lx2160a-rootimg.wks.in`: Kernel & RootFS only, for any block storage.
 
 ### DDR Clock
