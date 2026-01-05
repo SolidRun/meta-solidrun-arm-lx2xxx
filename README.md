@@ -12,15 +12,11 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
    git clone -b scarthgap https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git sources/meta-solidrun-arm-lx2xxx
    ```
 
-2. apply downstream patches to dependent layers:
-
-TBD.
-
-3. Initialise a build directory with example configuration files based on lx2160ardb, and appropriate shell environment variables:
+2. Initialise a build directory with example configuration files based on lx2160ardb, and appropriate shell environment variables:
 
        source ./setup-env -m lx2160ardb-rev2 -b build
 
-4. Adapt example configuration files for SolidRun LX2160A Honeycomb:
+3. Adapt example configuration files for SolidRun LX2160A Honeycomb:
 
    - edit `build_lx2160acex7-rev2/conf/bblayers.conf`:
 
@@ -47,11 +43,11 @@ TBD.
 
    - See below for additional configuration options.
 
-5. Build nxp image `fsl-image-networking`:
+4. Build nxp image `fsl-image-networking`:
 
        bitbake fsl-image-networking
 
-6. Find resulting image ready for programming:
+5. Find resulting image ready for programming:
 
        ls -lh tmp/deploy/images/
        ls -lh tmp/deploy/images/lx2160a-clearfog-cx/
