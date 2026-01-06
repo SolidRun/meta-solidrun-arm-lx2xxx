@@ -186,6 +186,20 @@ As a workaround apparmor "unprivileged_userns" profile can be temporarily disabl
 
     sudo apparmor_parser -R /etc/apparmor.d/unprivileged_userns
 
+### libvirt fails to build after changing `MACHINE` variable
+
+```
+ERROR: libvirt-10.0.0-r0 do_create_spdx: Cannot find any SPDX file for recipe base-files, False sstate:base-files:lx2160a_rev2_half_twins-fsl-linux:3.0.14:r0:lx2160a_rev2_half_twins:12: sstate:base-files::3.0.14:r0::12:
+ERROR: Logfile of failure stored in: /opt/workspace/YOCTO/lx2k-scarthgap/build/tmp/work/cortexa72-fsl-linux/libvirt/10.0.0/temp/log.do_create_spdx.153675
+ERROR: Task (/opt/workspace/YOCTO/lx2k-scarthgap/sources/meta-virtualization/recipes-extended/libvirt/libvirt_10.0.0.bb:do_create_spdx) failed with exit code '1'
+```
+
+When alternating between machines in the same build directory, e.g. in order to share sstate-cache, set TMPDIR to be machine-specific in `local.conf`:
+
+```
+TMPDIR = "${TOPDIR}/tmp-${MACHINE}"
+```
+
 ## Maintainer Notes
 
 ### Patching Linux / U-Boot / ATF / RCW / DPL / DPC / etc.:

@@ -1,0 +1,347 @@
+name: build
+
+on:
+  push:
+    branches: ["scarthgap"]
+  pull_request:
+    branches: ["scarthgap"]
+  schedule:
+    - cron: "0 0 * * 5"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  prepare_container:
+    name: Prepare Build Container
+    runs-on: self-hosted
+    timeout-minutes: 30
+    outputs:
+      uid: ${{ steps.uid_step.outputs.userid }}
+      gid: ${{ steps.uid_step.outputs.groupid }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Get user id/group
+        id: uid_step
+        run: |
+          echo "userid=$(id -u)" >> "$GITHUB_OUTPUT"
+          echo "groupid=$(id -g)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-config: /etc/docker/cibuilder.toml
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ciserver.ci:5000
+          username: ${{ secrets.CI_CACHE_REGISTRY_LOGIN }}
+          password: ${{ secrets.CI_CACHE_REGISTRY_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ciserver.ci:5000/${{ github.repository_id }}/scarthgap:latest
+          cache-from: type=registry,ref=ciserver.ci:5000/${{ github.repository_id }}:cache-scarthgap
+          cache-to: type=registry,ref=ciserver.ci:5000/${{ github.repository_id }}:cache-scarthgap,mode=max
+          file: conf/docker/Dockerfile
+          build-args: |
+            USER_ID=${{ steps.uid_step.outputs.userid }}
+            GROUP_ID=${{ steps.uid_step.outputs.groupid }}
+
+  info:
+    name: Collect Build Info
+    runs-on: self-hosted
+    timeout-minutes: 10
+    outputs:
+      build_date: ${{ steps.tag_step.outputs.build_date }}
+      build_rev: ${{ steps.tag_step.outputs.build_rev }}
+      build_ref: ${{ steps.tag_step.outputs.build_ref }}
+      build_tag: ${{ steps.tag_step.outputs.build_date }}_${{ steps.tag_step.outputs.build_rev }}
+      local_artifacts_path: ${{ github.repository_id }}/${{ steps.tag_step.outputs.build_date }}_${{ steps.tag_step.outputs.build_rev }}
+    steps:
+      - name: Generate build tags
+        shell: bash {0}
+        id: tag_step
+        run: |
+          build_date="$(date +%Y-%m-%d)"
+          build_rev="$(echo ${GITHUB_SHA} | head -zc 7)"
+          build_ref="${GITHUB_REF}"
+          echo "build_date=$build_date" >> "$GITHUB_OUTPUT"
+          echo "build_rev=$build_rev" >> "$GITHUB_OUTPUT"
+          echo "build_ref=$build_ref" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build
+    needs:
+      - prepare_container
+      - info
+    runs-on: self-hosted
+    timeout-minutes: 300
+    container:
+        image: ciserver.ci:5000/${{ github.repository_id }}/scarthgap:latest
+        credentials:
+            username: ${{ secrets.CI_CACHE_REGISTRY_LOGIN }}
+            password: ${{ secrets.CI_CACHE_REGISTRY_PASSWORD }}
+        options: --user developer
+    env:
+      TARGETS: |
+        [
+          {
+            "machine": "lx2160a-rev2-cex6-evb",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.bmap",
+              "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.gz",
+              "fsl-lx2160a-cex6-evb.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-cex6-evb.tgz",
+              "xspi.bin"
+            ]
+          },{
+            "machine": "lx2160a-rev2-clearfog-cx",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
+              "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.manifest",
+              "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
+              "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
+              "fsl-lx2160a-clearfog-cx.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-clearfog-cx.tgz",
+              "xspi.bin"
+            ]
+          },{
+            "machine": "lx2160a-rev2-half-twins",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.bmap",
+              "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.gz",
+              "fsl-lx2160a-half-twins.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-half-twins.tgz",
+              "xspi.bin"
+            ]
+          },{
+            "machine": "lx2160a-rev2-honeycomb",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
+              "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.manifest",
+              "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
+              "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.gz",
+              "fsl-lx2160a-honeycomb.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-honeycomb.tgz",
+              "xspi.bin"
+            ]
+          },{
+            "machine": "lx2162a-rev2-clearfog",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
+            "artifacts": [
+              "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.manifest",
+              "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.bmap",
+              "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.manifest",
+              "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.bmap",
+              "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.gz",
+              "fsl-lx2162a-clearfog.dtb",
+              "Image.gz",
+              "modules-lx2162a-rev2-clearfog.tgz",
+              "xspi.bin"
+            ]
+          }
+        ]
+    steps:
+      - name: Checkout pull-request version of meta-solidrun-arm-lx2xx
+        uses: actions/checkout@v4
+        with:
+          path: sources/meta-solidrun-arm-lx2xxx
+
+      - name: Checkout dependency layers
+        shell: bash {0}
+        run: |
+          # initialise repo tool from base branch
+          repo init -u https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git -b scarthgap -m ls-6.6.52-2.2.0-sr.xml
+
+          # overwrite manifest.xml with pull-request version
+          cp sources/meta-solidrun-arm-lx2xxx/ls-6.6.52-2.2.0-sr.xml .repo/manifests/ls-6.6.52-2.2.0-sr.xml
+
+          # prevent repo tool from changing already downloaded pull-request version of this repository
+          mkdir .repo/local_manifests
+          echo "<manifest><remove-project name=\"meta-solidrun-arm-lx2xxx\"/></manifest>" > .repo/local_manifests/ignore_self.xml
+
+          # fetch all other layers from manifest
+          repo sync
+
+      - name: Create cache dir
+        run: mkdir -p buildcache
+
+      - name: Fetch cache from server
+        uses: tespkg/actions-cache/restore@v1
+        with:
+          endpoint: ciserver.ci
+          port: 9000
+          insecure: true
+          accessKey: ${{ secrets.CI_CACHE_MINIO_ACCESS }}
+          secretKey: ${{ secrets.CI_CACHE_MINIO_SECRET }}
+          bucket: cicache
+          use-fallback: false
+          key: ${{ github.repository }}/scarthgap
+          path: |
+            buildcache
+
+      - name: Configure
+        shell: bash {0}
+        run: |
+            export EULA="1"
+            BASEDIR=$PWD
+            source ./setup-env -m lx2160ardb-rev2 -b build
+            bitbake-layers add-layer $BASEDIR/sources/meta-solidrun-arm-lx2xxx
+            echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}\"" >> conf/local.conf
+            echo "IMAGE_FSTYPES:append = \" wic.gz wic.bmap \"" >> conf/local.conf
+            echo "# break dependency cycle with core-image-minimal used as initramfs" >> conf/local.conf
+            echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz wic.bmap\"" >> conf/local.conf
+            echo "require conf/includes/ci.conf" >> conf/local.conf
+
+      - name: Download Sources
+        shell: bash {0}
+        run: |
+            source build/SOURCE_THIS
+            export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
+            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
+
+            echo "$TARGETS" | jq -c '.[]' | while read -r item; do
+              machine=$(echo "$item" | jq -r '.machine')
+              targets=($(echo "$item" | jq -r '.targets[]'))
+
+              env MACHINE="$machine" WKS_FILE="lx2160a-$type.wks.in" bitbake -k ${targets[@]} --runall=fetch
+            done
+        continue-on-error: true
+
+      - name: Build
+        if: ${{ !cancelled() }}
+        id: build_step
+        shell: bash {0}
+        run: |
+            source build/SOURCE_THIS
+            export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
+            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
+
+            echo "$TARGETS" | jq -c '.[]' | while read -r item; do
+              machine=$(echo "$item" | jq -r '.machine')
+              targets=($(echo "$item" | jq -r '.targets[]'))
+
+              env MACHINE="$machine" WKS_FILE="lx2160a-$type.wks.in" bitbake -k ${targets[@]}
+            done
+        continue-on-error: true
+
+      - name: Update cache on the server (build may have failed)
+        if: ${{ !cancelled() }}
+        uses: tespkg/actions-cache/save@v1
+        with:
+          endpoint: ciserver.ci
+          port: 9000
+          insecure: true
+          accessKey: ${{ secrets.CI_CACHE_MINIO_ACCESS }}
+          secretKey: ${{ secrets.CI_CACHE_MINIO_SECRET }}
+          bucket: cicache
+          use-fallback: false
+          key: ${{ github.repository }}/scarthgap
+          path: |
+            buildcache
+
+      - name: Select artifacts for publishing
+        if: ${{ (!cancelled()) && (steps.build_step.outcome == 'success') }}
+        shell: bash -e {0}
+        run: |
+            echo "$TARGETS" | jq -c '.[]' | while read -r item; do
+              machine=$(echo "$item" | jq -r '.machine')
+              artifacts=($(echo "$item" | jq -r '.artifacts[]'))
+
+              tmpdir=$PWD/build/tmp-$machine/deploy/images/$machine
+              deploydir=$PWD/deploy/$machine
+              mkdir -vp $deploydir
+
+              pushd $tmpdir
+              ls -lh
+              cp -v -L ${artifacts[@]} $deploydir/
+              popd
+            done
+
+      - name: Deploy to the local minio storage
+        if: ${{ (!cancelled()) && (steps.build_step.outcome == 'success') }}
+        uses: yakubique/minio-upload@v1.1.3
+        with:
+          endpoint: http://ciserver.ci:9000
+          insecure: true
+          access_key: ${{ secrets.CI_CACHE_MINIO_ACCESS }}
+          secret_key: ${{ secrets.CI_CACHE_MINIO_SECRET }}
+          bucket: cipublish
+          source: ./deploy/
+          "target": "/${{ needs.info.outputs.local_artifacts_path }}/"
+          recursive: true
+
+      - name: Fail Late
+        if: ${{ steps.build_step.outcome == 'failure' }}
+        shell: bash {0}
+        run: exit 1
+
+  test_images:
+    name: Test on Hardware
+    needs:
+      - info
+      - build
+    runs-on: self-hosted
+    timeout-minutes: 90
+
+    steps:
+      - name: Generate Temporary Image Download URLs
+        id: dl_url
+        shell: bash {0}
+        run: |
+          echo "lx2162a_rev2_clearfog_fsl_image_networking_url=http://ciserver.ci:8000/cipublish/${{ needs.build.outputs.local_artifacts_path }}/lx2162a-rev2-clearfog/fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
+          echo "lx2162a_rev2_clearfog_fsl_image_networking_full_url=http://ciserver.ci:8000/cipublish/${{ needs.build.outputs.local_artifacts_path }}/lx2162a-rev2-clearfog/fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout LAVA action
+        uses: actions/checkout@v4
+        with:
+          repository: SolidRun/lava-test-definitions
+          path: .lava-action
+          ssh-key: ${{ secrets.LAVA_ACTION_SECRET }}
+
+      - name: Test Images on LAVA
+        id: submit
+        uses: ./.lava-action/.github/actions/lava-submit
+        with:
+          server: 192.168.15.184
+          port: 8001
+          timeout: 36000
+          jobs: |
+            [
+              {
+                "device_type": "lx2162a-solidrun",
+                "tags": [],
+                "image_url": "${{ steps.dl_url.outputs.lx2162a_rev2_clearfog_fsl_image_networking_url }}",
+                "description": "LX2162A Clearfog Yocto - FSL Network - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
+                "compression": "xz",
+                "all_devices": false
+              },{
+                "device_type": "lx2162a-solidrun",
+                "tags": [],
+                "image_url": "${{ steps.dl_url.outputs.lx2162a_rev2_clearfog_fsl_image_networking_full_url }}",
+                "description": "LX2162A Clearfog Yocto - FSL Network Full - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
+                "compression": "xz",
+                "all_devices": false
+              }
+            ]
