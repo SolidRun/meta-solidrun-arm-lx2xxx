@@ -1,17 +1,3 @@
-# select DTBs
-KERNEL_DEVICETREE ?= " \
-	freescale/fsl-lx2160a-clearfog-cx.dtb \
-	freescale/fsl-lx2160a-honeycomb.dtb \
-"
-
-# install DTBs with freescale/ prefix
-IMAGE_BOOT_FILES:append = " \
-    fsl-lx2160a-clearfog-cx.dtb;freescale/fsl-lx2160a-clearfog-cx.dtb \
-    fsl-lx2160a-honeycomb.dtb;freescale/fsl-lx2160a-honeycomb.dtb \
-"
-# HACK: place one sentinel dtb without freescale/ prefix to fix wic image generated extlinux.conf fdtdir path
-IMAGE_BOOT_FILES:prepend = " fsl-lx2160a-clearfog-cx.dtb;sentinel.dtb "
-
 # select DPL/DPC (config/lx2160a/LX2160A-<MC_FLAVOUR>/<DPL/DPC>)
 # variable consumed in wks files
 MC_DPC ?= "clearfog-cx-s1_8-s2_0-dpc.dtb"

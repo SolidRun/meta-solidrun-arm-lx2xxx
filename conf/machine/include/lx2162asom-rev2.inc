@@ -3,7 +3,7 @@
 #@SOC: LSCH3
 #@DESCRIPTION: Machine configuration for SolidRun LX2162A Rev 2.0 System on Module
 
-MACHINEOVERRIDES =. "lx2162a-som:fsl-lsch3:lx2162a:"
+MACHINEOVERRIDES =. "lx2162a-som:lx216xa-sr:fsl-lsch3:lx2162a:"
 
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"

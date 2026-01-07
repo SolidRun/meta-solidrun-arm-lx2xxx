@@ -3,7 +3,7 @@
 #@SOC: LSCH3
 #@DESCRIPTION: Machine configuration for SolidRun Internal LX2160A Rev 2.0 COM-Express Type 6 Module
 
-MACHINEOVERRIDES =. "lx2160a-cex6:fsl-lsch3:lx2160a:"
+MACHINEOVERRIDES =. "lx2160a-cex6:lx216xa-sr:fsl-lsch3:lx2160a:"
 
 DTB_LOAD = "0x90000000"
 UBOOT_ENTRYPOINT = "0x80080000"

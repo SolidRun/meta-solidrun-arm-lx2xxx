@@ -85,6 +85,7 @@ This Layer supports the following images:
 | ------------------------- | ------------------------------------------------------------------------------ |
 | fsl-image-networking      | Typical networking features and basic cli utilities                            |
 | fsl-image-networking-full | Demo of all packages tested by NXP including dpdk, dpdk examples and vpp       |
+| lx216xa-xspi-image        | Boot image for SPI Flash                                                       |
 
 ### Image Types (wic)
 
