@@ -96,7 +96,6 @@ jobs:
             "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.manifest",
-              "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.bmap",
               "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.gz",
               "fsl-lx2160a-cex6-evb.dtb",
               "Image.gz",
@@ -108,10 +107,8 @@ jobs:
             "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.manifest",
-              "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
               "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
               "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.manifest",
-              "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
               "fsl-lx2160a-clearfog-cx.dtb",
               "Image.gz",
@@ -123,7 +120,6 @@ jobs:
             "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.manifest",
-              "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.bmap",
               "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.gz",
               "fsl-lx2160a-half-twins.dtb",
               "Image.gz",
@@ -135,10 +131,8 @@ jobs:
             "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.manifest",
-              "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
               "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.gz",
               "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.manifest",
-              "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.gz",
               "fsl-lx2160a-honeycomb.dtb",
               "Image.gz",
@@ -150,10 +144,8 @@ jobs:
             "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
             "artifacts": [
               "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.manifest",
-              "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.bmap",
               "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.gz",
               "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.manifest",
-              "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.gz",
               "fsl-lx2162a-clearfog.dtb",
               "Image.gz",
@@ -209,9 +201,9 @@ jobs:
             source ./setup-env -m lx2160ardb-rev2 -b build
             bitbake-layers add-layer $BASEDIR/sources/meta-solidrun-arm-lx2xxx
             echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}\"" >> conf/local.conf
-            echo "IMAGE_FSTYPES:append = \" wic.gz wic.bmap \"" >> conf/local.conf
+            echo "IMAGE_FSTYPES:append = \" wic.gz \"" >> conf/local.conf
             echo "# break dependency cycle with core-image-minimal used as initramfs" >> conf/local.conf
-            echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz wic.bmap\"" >> conf/local.conf
+            echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz\"" >> conf/local.conf
             echo "require conf/includes/ci.conf" >> conf/local.conf
 
       - name: Download Sources

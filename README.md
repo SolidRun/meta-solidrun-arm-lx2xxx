@@ -36,9 +36,9 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
      Enable generating sd bootable image (wic). append:
 
      ```
-     IMAGE_FSTYPES:append = " wic.gz wic.bmap "
+     IMAGE_FSTYPES:append = " wic.gz "
      # break dependency cycle with core-image-minimal used as initramfs
-     IMAGE_FSTYPES:remove:pn-core-image-minimal = "wic.gz wic.bmap"
+     IMAGE_FSTYPES:remove:pn-core-image-minimal = "wic.gz"
      ```
 
    - See below for additional configuration options.
