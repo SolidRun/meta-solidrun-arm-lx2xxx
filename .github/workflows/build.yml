@@ -110,6 +110,7 @@ jobs:
             EULA=1
             . ./setup-env -m lx2160ardb-rev2 -b build
             printf 'BBLAYERS += "%s"\n' $GITHUB_WORKSPACE/sources/meta-solidrun-arm-lx2xxx >> conf/bblayers.conf
+            echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}\"" >> conf/local.conf
             echo "require conf/includes/ci.conf" >> conf/local.conf
 
       - name: Download Sources (ignore errors)
@@ -144,7 +145,7 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
-            ls -lh tmp/deploy/images/$MACHINE
+            ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2160a-rev2-honeycomb
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
@@ -156,7 +157,7 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
-            ls -lh tmp/deploy/images/$MACHINE
+            ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2162a-rev2-clearfog
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
@@ -168,12 +169,12 @@ jobs:
             wic create -m -o wic-$MACHINE lx2160a-rootimg -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct $IMAGE-$MACHINE-rootimg.wic
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
-            ls -lh tmp/deploy/images/$MACHINE
+            ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2160a-rev2-clearfog-cx
             bitbake -k vpp-oci-image
-            ln -sv tmp/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs-oci.tar vpp-oci-image-lx216x.rootfs-oci.tar
-            ln -sv tmp/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs.manifest vpp-oci-image-lx216x.rootfs.manifest
-            ls -lh tmp/deploy/images/$MACHINE
+            ln -sv tmp-$MACHINE/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs-oci.tar vpp-oci-image-lx216x.rootfs-oci.tar
+            ln -sv tmp-$MACHINE/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs.manifest vpp-oci-image-lx216x.rootfs.manifest
+            ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             ls -lh
         continue-on-error: true
 
@@ -201,40 +202,44 @@ jobs:
       - name: Select artifacts for publishing
         shell: bash -e {0}
         run: |
-            export IMAGE=fsl-image-networking-full
-            export MACHINE=lx2160a-rev2-clearfog-cx
+            IMAGE=fsl-image-networking-full
+            MACHINE=lx2160a-rev2-clearfog-cx
+            IMAGEDIR=build/tmp-$MACHINE/deploy/images/$MACHINE
             mkdir deploy
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
-            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
-            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
-            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.manifest deploy
+            pushd $IMAGEDIR; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv $IMAGEDIR/device-tree-$MACHINE.tgz deploy
+            cp -L $IMAGEDIR/Image deploy/Image-$MACHINE
+            cp -L $IMAGEDIR/modules-$MACHINE.tgz deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
             cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
-            export MACHINE=lx2160a-rev2-honeycomb
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
-            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
-            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
-            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            MACHINE=lx2160a-rev2-honeycomb
+            IMAGEDIR=build/tmp-$MACHINE/deploy/images/$MACHINE
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.manifest deploy
+            pushd $IMAGEDIR; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv $IMAGEDIR/device-tree-$MACHINE.tgz deploy
+            cp -L $IMAGEDIR/Image deploy/Image-$MACHINE
+            cp -L $IMAGEDIR/modules-$MACHINE.tgz deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
             cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
-            export MACHINE=lx2162a-rev2-clearfog
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.ext2.gz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/$IMAGE-$MACHINE.manifest deploy
-            pushd build/tmp/deploy/images/$MACHINE; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
-            mv build/tmp/deploy/images/$MACHINE/device-tree-$MACHINE.tgz deploy
-            cp -L build/tmp/deploy/images/$MACHINE/Image deploy/Image-$MACHINE
-            cp -L build/tmp/deploy/images/$MACHINE/modules-$MACHINE.tgz deploy
+            MACHINE=lx2162a-rev2-clearfog
+            IMAGEDIR=build/tmp-$MACHINE/deploy/images/$MACHINE
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.ext2.gz deploy
+            cp -L $IMAGEDIR/$IMAGE-$MACHINE.manifest deploy
+            pushd $IMAGEDIR; tar -cpzf device-tree-$MACHINE.tgz freescale/*.dtb; popd
+            mv $IMAGEDIR/device-tree-$MACHINE.tgz deploy
+            cp -L $IMAGEDIR/Image deploy/Image-$MACHINE
+            cp -L $IMAGEDIR/modules-$MACHINE.tgz deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-mmc.wic* deploy
             cp -L build/$IMAGE-$MACHINE-bootimg-xspi.wic* deploy
             cp -L build/$IMAGE-$MACHINE-rootimg.wic* deploy
             cp -L build/vpp-oci-image-lx216x.rootfs-oci.tar build/vpp-oci-image-lx216x.rootfs.manifest deploy
-            xz -9 deploy/*.wic
+            find deploy -maxdepth 1 -type f -iname "*.wic" -print0 | xargs -0 -n 1 -P 0 echo xz -9 -T 16
+            find deploy -maxdepth 1 -type f -iname "*.wic" -print0 | xargs -0 -n 1 -P 0 xz -9 -T 16
             ls -lh deploy/*
 
       - name: Deploy to the local minio storage
@@ -274,4 +279,4 @@ jobs:
           aws_bucket: ${{ secrets.IMAGES_S3_BUCKET }}
           endpoint: ${{ secrets.IMAGES_S3_HOST }}
           source_dir: deploy
-          destination_dir: LX2k/meta-solidrun-arm-lx2xxx/${{ needs.build_images.outputs.build_tag }}
+          destination_dir: LX2k/meta-solidrun-arm-lx2xxx/kirkstone-ls-5.15.71-2.2.0/${{ needs.build_images.outputs.build_tag }}
