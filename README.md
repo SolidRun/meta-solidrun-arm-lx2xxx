@@ -1,5 +1,7 @@
 # SolidRun LX2160A Yocto BSP
 
+**This branch is incomplete!**
+
 ## Build Instructions
 
 Start in a **new empty directory** with plenty of free disk space - at least 30GB, Then:
@@ -7,7 +9,7 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 1. download the build recipes:
 
    ```
-   repo init -u https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git -b scarthgap -m ls-6.6.52-2.2.0-sr.xml
+   repo init -u https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git -b walnascar -m ls-6.12.49-2.2.0-sr.xml
    repo sync
    ```
 

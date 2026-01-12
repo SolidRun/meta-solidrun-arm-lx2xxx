@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable Kernel Module Compression"
-define KFEATURE_COMPATIBILITY board
-
-kconf non-hardware compressed-modules.cfg

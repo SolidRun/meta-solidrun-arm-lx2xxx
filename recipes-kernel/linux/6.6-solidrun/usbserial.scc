@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable USB Serial Adapter Drivers"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware usbserial.cfg

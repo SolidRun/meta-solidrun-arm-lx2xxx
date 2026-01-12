@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable AMDGPU driver"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware amdgpu.cfg
