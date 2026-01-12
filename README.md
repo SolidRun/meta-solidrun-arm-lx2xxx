@@ -134,6 +134,11 @@ Additional configurations are added by patching `mc-utils` package and adding fi
 
 ## Known Issues
 
+### SFP Ports with Retimer can't link up
+
+The 2x 25Gbps ports on LX2162A Clearfog, and the QSFP on Clearfog-CX can't detect link.
+RX direction is not currently functional, no known workaround.
+
 ### `setup-env` script requires bash
 
 On shells other than bash the nxp `setup-env` script fails unintuitively, e.g. below with zsh:
