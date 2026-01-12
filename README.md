@@ -6,7 +6,7 @@ This is the SolidRun Yocto BSP Layer for NXP LX2160A & LX2162A Landing Page. Spe
 
   Based on NXP QorIQ LS-6.6.52-2.2.0 Release.
 
-  This version is incomplete and under active development.
+  This version is under active development.
 
 - [kirkstone](https://github.com/SolidRun/meta-solidrun-arm-lx2xxx/tree/kirkstone):
 
