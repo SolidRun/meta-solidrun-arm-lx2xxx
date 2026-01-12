@@ -14,6 +14,8 @@ SRC_URI += "file://0001-lx2162aqds-re-enable-dpmac11.patch \
             file://0010-add-configuration-solidrun-internal-lx2160acex7-twin.patch \
             file://0011-lx2162asom_rev2-disable-mac7-10-apply-mac5-6-default.patch \
             file://0012-lx2160acex7-clearfog-cx-add-configurations-for-SD3-3.patch \
+            file://0013-lx2162asom_rev2-generate-config-for-sd1-protocol-3-4.patch \
+            file://0014-lx2162asom_rev2-remove-duplicate-pbi-command-disabli.patch \
 "
 
 # set BOARD_TARGETS recipe variable from machine config RCW_BOARDS if defined
