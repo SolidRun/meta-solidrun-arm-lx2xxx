@@ -7,9 +7,8 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
 1. download the build recipes:
 
    ```
-   repo init -u https://github.com/nxp-qoriq/yocto-sdk.git -b scarthgap -m ls-6.6.52-2.2.0.xml
+   repo init -u https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git -b scarthgap -m ls-6.6.52-2.2.0-sr.xml
    repo sync
-   git clone -b scarthgap https://github.com/SolidRun/meta-solidrun-arm-lx2xxx.git sources/meta-solidrun-arm-lx2xxx
    ```
 
 2. Initialise a build directory with example configuration files based on lx2160ardb, and appropriate shell environment variables:
