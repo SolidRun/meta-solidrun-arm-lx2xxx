@@ -135,6 +135,7 @@ jobs:
             export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
             export IMAGE=fsl-image-networking-full
             export MACHINE=lx2160a-rev2-clearfog-cx
+            bitbake -c cleanall libvirt
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
@@ -147,6 +148,7 @@ jobs:
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
             ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2160a-rev2-honeycomb
+            bitbake -c cleanall libvirt
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
@@ -159,6 +161,7 @@ jobs:
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
             ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2162a-rev2-clearfog
+            bitbake -c cleanall libvirt
             bitbake -k $IMAGE
             wic create -m -o wic-$MACHINE lx2160a-bootimg-mmc -e $IMAGE
             ln -sv wic-$MACHINE/lx2160a-bootimg-mmc.wks*.direct $IMAGE-$MACHINE-bootimg-mmc.wic
@@ -171,6 +174,7 @@ jobs:
             ln -sv wic-$MACHINE/lx2160a-rootimg.wks*.direct.bmap $IMAGE-$MACHINE-rootimg.wic.bmap
             ls -lh tmp-$MACHINE/deploy/images/$MACHINE
             export MACHINE=lx2160a-rev2-clearfog-cx
+            bitbake -c cleanall libvirt
             bitbake -k vpp-oci-image
             ln -sv tmp-$MACHINE/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs-oci.tar vpp-oci-image-lx216x.rootfs-oci.tar
             ln -sv tmp-$MACHINE/deploy/images/$MACHINE/vpp-oci-image-$MACHINE-*.rootfs.manifest vpp-oci-image-lx216x.rootfs.manifest
