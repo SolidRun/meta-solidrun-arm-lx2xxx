@@ -38,6 +38,8 @@ SRC_URI += "file://0001-pci-ls_pcie_g4-Wait-100ms-for-Link-Up-in-ls_pcie_g4_.pat
             file://0034-pci-ls_pcie-ls_pcie_g4-fix-compiler-warning-for-dela.patch \
             file://0035-board-solidrun-lx2160acex7-change-fan-speed-for-lx21.patch \
             file://0036-cmd-ds250dfx10-change-eye-diagram-commabd-behaviour.patch \
+            file://0037-mmc-fsl_esdhc-call-cyclic-schedule-during-dma-transf.patch \
+            file://lx2160a-pci-iommu-extra-mapping.cfg \
 "
 
 do_configure:append() {
@@ -55,3 +57,6 @@ do_configure:append() {
         oe_runmake -C ${S} O=${B}/${umachine} oldconfig
     done
 }
+
+# applying .cfg files requires merge_config.sh provided by kern-tools-native
+DEPENDS += "kern-tools-native"
