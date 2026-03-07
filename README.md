@@ -169,7 +169,7 @@ Ensure using a `bash` shell.
 
 Bitbake can fail with a confusing permission error while trying to disable it's child processes network access:
 
-```
+```text
 ERROR: PermissionError: [Errno 1] Operation not permitted
 
 During handling of the above exception, another exception occurred:
@@ -192,7 +192,7 @@ As a workaround apparmor "unprivileged_userns" profile can be temporarily disabl
 
 ### libvirt fails to build after changing `MACHINE` variable
 
-```
+```text
 ERROR: libvirt-10.0.0-r0 do_create_spdx: Cannot find any SPDX file for recipe base-files, False sstate:base-files:lx2160a_rev2_half_twins-fsl-linux:3.0.14:r0:lx2160a_rev2_half_twins:12: sstate:base-files::3.0.14:r0::12:
 ERROR: Logfile of failure stored in: /opt/workspace/YOCTO/lx2k-scarthgap/build/tmp/work/cortexa72-fsl-linux/libvirt/10.0.0/temp/log.do_create_spdx.153675
 ERROR: Task (/opt/workspace/YOCTO/lx2k-scarthgap/sources/meta-virtualization/recipes-extended/libvirt/libvirt_10.0.0.bb:do_create_spdx) failed with exit code '1'
@@ -202,6 +202,31 @@ When alternating between machines in the same build directory, e.g. in order to 
 
 ```
 TMPDIR = "${TOPDIR}/tmp-${MACHINE}"
+```
+
+### unzip-native fails with GCC 15 or later
+
+Several packages fail with conflicting types errors when host gcc versions 15 and later implemented stricter checks.
+E.g. unzip-natove fails as below:
+
+```text
+| In file included from unix/unxcfg.h:119:
+| /usr/include/time.h:132:19: note: previous declaration of ‘gmtime’ with type ‘struct tm *(const time_t *)’ {aka ‘struct tm *(const long int *)’}
+|   132 | extern struct tm *gmtime (const time_t *__timer) __THROW;
+|       |                   ^~~~~~
+| unix/unxcfg.h:120:26: error: conflicting types for ‘localtime’; have ‘struct tm *(void)’
+|   120 |    struct tm *gmtime(), *localtime();
+|       |                          ^~~~~~~~~
+| /usr/include/time.h:136:19: note: previous declaration of ‘localtime’ with type ‘struct tm *(const time_t *)’ {aka ‘struct tm *(const long int *)’}
+|   136 | extern struct tm *localtime (const time_t *__timer) __THROW;
+|       |
+```
+
+As a workaround upgrade poky to yocto-5.0.13 tag or later
+
+```sh
+cd sources/poky
+git reset --hard yocto-5.0.13
 ```
 
 ## Maintainer Notes
