@@ -32,8 +32,14 @@ do_compile() {
     # Using 0xFF is better for Flash images than 0x00
     tr '\000' '\377' < /dev/zero | dd of=${B}/xspi.bin bs=1M count=64
     
+    # prefer auto-boot, fall-back to flexspi_nor
+    BL2=${DEPLOY_DIR_IMAGE}/atf/bl2_auto.pbl
+    if [ ! -f ${BL2} ]; then
+        BL2=${DEPLOY_DIR_IMAGE}/atf/bl2_flexspi_nor.pbl
+    fi
+
     # 2. Use 'conv=notrunc' to write at specific offsets without wiping the rest
-    dd if=${DEPLOY_DIR_IMAGE}/atf/bl2_auto.pbl  of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_BL2}
+    dd if=${BL2} of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_BL2}
     dd if=${DEPLOY_DIR_IMAGE}/atf/fip_uboot.bin of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_BL3}
     dd if=${DEPLOY_DIR_IMAGE}/ddr-phy/fip_ddr.bin of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_DDR}
     dd if=${DEPLOY_DIR_IMAGE}/mc_app/mc.itb of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_MC_FW}
