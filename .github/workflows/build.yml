@@ -217,7 +217,7 @@ jobs:
               machine=$(echo "$item" | jq -r '.machine')
               targets=($(echo "$item" | jq -r '.targets[]'))
 
-              env MACHINE="$machine" WKS_FILE="lx2160a-$type.wks.in" bitbake -k ${targets[@]} --runall=fetch
+              env MACHINE="$machine" bitbake -k ${targets[@]} --runall=fetch
             done
         continue-on-error: true
 
@@ -234,7 +234,7 @@ jobs:
               machine=$(echo "$item" | jq -r '.machine')
               targets=($(echo "$item" | jq -r '.targets[]'))
 
-              env MACHINE="$machine" WKS_FILE="lx2160a-$type.wks.in" bitbake -k ${targets[@]}
+              env MACHINE="$machine" bitbake -k ${targets[@]}
             done
         continue-on-error: true
 
