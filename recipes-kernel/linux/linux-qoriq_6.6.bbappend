@@ -26,6 +26,7 @@ SRC_URI += "file://0001-arm64-dts-freescale-Add-support-for-LX2162-SoM-Clear.pat
             file://0022-arm64-dts-fsl-lx2160a-cex7-add-rtc-alias.patch \
             file://0023-arm64-dts-add-description-for-lx2160a-cex7-on-half-t.patch \
             file://0024-net-dpaa2-mac-standalone-fix-netdev-registration-rac.patch \
+            file://0025-arm64-dts-fsl-lx2160a-half-twins-fix-microsd-speed-l.patch \
 "
 
 # Enable non-default kernel configs

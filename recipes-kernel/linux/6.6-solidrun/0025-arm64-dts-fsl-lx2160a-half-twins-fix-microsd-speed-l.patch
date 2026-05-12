@@ -1,0 +1,29 @@
+From 2e0603062d67f087fcd8abc7057f15c4109270c4 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Sun, 10 May 2026 17:08:08 +0200
+Subject: [PATCH] arm64: dts: fsl-lx2160a-half-twins: fix microsd speed limit
+
+Fix the microsd connector sdhc controller flag to disable 1.8V
+high-speed modes as intended.
+
+Sined-off-by: Josua Mayer <josua@solid-run.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+index 142eb3ca4345..e7ec3cfec916 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+@@ -588,7 +588,7 @@ &esdhc0 {
+ 	 * power-on-reset, u-boot and linux.
+ 	 * This avoids sporadic read errors after hard reset with some cards.
+ 	 */
+-	no-1-v-8;
++	no-1-8-v;
+ 	status = "okay";
+ };
+ 
+-- 
+2.51.0
+
