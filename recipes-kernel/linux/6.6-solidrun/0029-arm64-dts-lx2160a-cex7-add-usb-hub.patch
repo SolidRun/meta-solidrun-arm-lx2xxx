@@ -1,0 +1,103 @@
+From 85eb9011c91a59d819e62f61f16d136a37c82467 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Sun, 24 May 2026 16:54:47 +0200
+Subject: [PATCH 29/29] arm64: dts: lx2160a-cex7: add usb hub
+
+LX2160A CEX-7 module provides a total of 4 USB ports to the carrier
+board, one from first usb controller, and 3 from a hub behind the second
+controller.
+
+Both controllers currently have their status set okay in the module's
+dtsi file. However devices should be disabled by default when
+incomplete.
+
+The first USB controller is only completed by a carrier board featuring
+a device or USB connector.
+
+The second controller hosts a USB hub and should therefore be active.
+
+Add description for the USB hub, and enable the first controller only in
+the carrier board description.
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ .../boot/dts/freescale/fsl-lx2160a-cex7.dtsi  | 29 ++++++++++++++++---
+ .../freescale/fsl-lx2160a-clearfog-itx.dtsi   |  4 +++
+ .../dts/freescale/fsl-lx2160a-half-twins.dts  |  4 +++
+ 3 files changed, 33 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-cex7.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a-cex7.dtsi
+index edaa3f36eebc..dc096ae7d8d9 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-cex7.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-cex7.dtsi
+@@ -13,6 +13,13 @@ aliases {
+ 		rtc0 = &com_rtc;
+ 	};
+ 
++	v_1_2: regulator-1-2 {
++		compatible = "regulator-fixed";
++		regulator-name = "1v2";
++		regulator-max-microvolt = <1200000>;
++		regulator-min-microvolt = <1200000>;
++	};
++
+ 	sb_3v3: regulator-sb3v3 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "RT7290";
+@@ -177,10 +184,24 @@ flash@0 {
+ 	};
+ };
+ 
+-&usb0 {
+-	status = "okay";
+-};
+-
+ &usb1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	status = "okay";
++
++	usb_hub_2_0: hub@1 {
++		compatible = "usb4b4,6502", "usb4b4,6506";
++		reg = <1>;
++		peer-hub = <&usb_hub_3_0>;
++		vdd2-supply = <&sb_3v3>;
++		vdd-supply = <&v_1_2>;
++	};
++
++	usb_hub_3_0: hub@2 {
++		compatible = "usb4b4,6500", "usb4b4,6504";
++		reg = <2>;
++		peer-hub = <&usb_hub_2_0>;
++		vdd2-supply = <&sb_3v3>;
++		vdd-supply = <&v_1_2>;
++	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
+index 27829fcc48cf..f92f60a77468 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
+@@ -140,3 +140,7 @@ &uart0 {
+ &uart1 {
+ 	status = "okay";
+ };
++
++&usb0 {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+index 6ce4bc10efda..e2bf5e39b350 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+@@ -672,3 +672,7 @@ &uart0 {
+ &uart1 {
+ 	status = "okay";
+ };
++
++&usb0 {
++	status = "okay";
++};
+-- 
+2.51.0
+

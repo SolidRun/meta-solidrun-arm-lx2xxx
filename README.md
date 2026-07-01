@@ -65,16 +65,18 @@ source SOURCE_THIS
 
 This Layer supports the following machines:
 
-| Machine                  | Description                                                                    |
-| ------------------------ | ------------------------------------------------------------------------------ |
-| lx2160a-clearfog-cx      | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 1.0 (preview version)    |
-| lx2160a-honeycomb        | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 1.0 (preview version)      |
-| lx2160a-rev2-cex6-evb    | SolidRun-internal Evaluation Board, LX2160A Silicon 2.0 (production version)   |
-| lx2160a-rev2-clearfog-cx | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 2.0 (production version) |
-| lx2160a-rev2-honeycomb   | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 2.0 (production version)   |
-| lx2160a-rev2-half-twins  | LX2160A COM-Express 7 on Twins, LX2160A Silicon 2.0 (production version)       |
-| lx2162a-rev2-clearfog    | LX2162A SoM on Clearfog                                                        |
-| lx216xa-solidrun         | Generic LX2160A & LX2162A without Bootloader                                   |
+| Machine                  | Description                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| lx2160a-clearfog-cx      | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 1.0 (preview version)                    |
+| lx2160a-honeycomb        | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 1.0 (preview version)                      |
+| lx2160a-rev2-cex6-evb    | SolidRun-internal Evaluation Board, LX2160A Silicon 2.0 (production version)                   |
+| lx2160a-rev2-clearfog-cx | LX2160A COM-Express 7 on Clearfog-CX, LX2160A Silicon 2.0 (production version)                 |
+| lx2160a-rev2-honeycomb   | LX2160A COM-Express 7 on Honeycomb, LX2160A Silicon 2.0 (production version)                   |
+| lx2160a-rev2-half-twins  | LX2160A COM-Express 7 on Twins, LX2160A Silicon 2.0 (production version), Single CPU           |
+| lx2160a-rev2-twins-left  | LX2160A COM-Express 7 on Twins, LX2160A Silicon 2.0 (production version), Dual CPU, Left Side  |
+| lx2160a-rev2-twins-right | LX2160A COM-Express 7 on Twins, LX2160A Silicon 2.0 (production version), Dual CPU, Right Side |
+| lx2162a-rev2-clearfog    | LX2162A SoM on Clearfog                                                                        |
+| lx216xa-solidrun         | Generic LX2160A & LX2162A without Bootloader                                                   |
 
 ### Supported Images
 
@@ -227,6 +229,25 @@ As a workaround upgrade poky to yocto-5.0.13 tag or later
 ```sh
 cd sources/poky
 git reset --hard yocto-5.0.13
+```
+
+### shadow-native fails if host has libeconf installed system-wide
+
+shadow-native build fails to find libeconf.h file **if host has libeconf.so**:
+
+```
+| libtool: compile:  gcc -I. -I../../shadow-4.14.2/lib -I.. -DUSE_ECONF=1 -I../../shadow-4.14.2 -isystem/opt/workspace/YOCTO/lx2xxx-scarthgap/build/tmp-lx2160a-rev2-twins-right/work/x86_64-linux/shadow-native/4.14.2/recipe-sysroot-native/usr/include -DLIBBSD_OVERLAY -isystem /opt/workspace/YOCTO/lx2xxx-scarthgap/build/tmp-lx2160a-rev2-twins-right/work/x86_64-linux/shadow-native/4.14.2/recipe-sysroot-native/usr/lib/pkgconfig/../../
+../usr/include/bsd -isystem/opt/workspace/YOCTO/lx2xxx-scarthgap/build/tmp-lx2160a-rev2-twins-right/work/x86_64-linux/shadow-native/4.14.2/recipe-sysroot-native/usr/include -O2 -pipe -c ../../shadow-4.14.2/lib/getdef.c  -fPIC -DPIC -o .libs/libshadow_la-getdef.o
+| ../../shadow-4.14.2/lib/getdef.c:22:10: fatal error: libeconf.h: No such file or directory
+|    22 | #include <libeconf.h>
+|       |          ^~~~~~~~~~~~
+| compilation terminated.
+```
+
+As a work-around, add to local.conf an override to libeconf.so auto-detection:
+
+```
+EXTRA_OECONF:append:class-native:pn-shadow-native = " ac_cv_lib_econf_econf_readDirs=no"
 ```
 
 ## Maintainer Notes

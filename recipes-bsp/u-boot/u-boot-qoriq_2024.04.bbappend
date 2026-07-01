@@ -39,7 +39,17 @@ SRC_URI += "file://0001-pci-ls_pcie_g4-Wait-100ms-for-Link-Up-in-ls_pcie_g4_.pat
             file://0035-board-solidrun-lx2160acex7-change-fan-speed-for-lx21.patch \
             file://0036-cmd-ds250dfx10-change-eye-diagram-commabd-behaviour.patch \
             file://0037-mmc-fsl_esdhc-call-cyclic-schedule-during-dma-transf.patch \
-            file://lx2160a-pci-iommu-extra-mapping.cfg \
+            file://0038-cmd-tlv_eeprom-fix-compiler-warning-for-undefined-va.patch \
+            file://0039-tools-imagetool-Remove-unnecessary-check-from-toc0_v.patch \
+            file://0040-cmd-ds250dfx10-support-accumulating-multiple-eye-dia.patch \
+            file://0041-cmd-ds250dfx10-support-manual-link-adaptation-contro.patch \
+            file://0042-board-solidrun-lx2160acex7-enable-clearfog-cx-honeyc.patch \
+            file://0043-board-solidrun-lx2160acex7-support-tiny-4MB-boot-med.patch \
+            file://0044-board-solidrun-lx2160acex7-support-build-time-option.patch \
+            file://0045-board-solidrun-lx2160acex7-sync-dts-with-linux-add-f.patch \
+            file://0046-drivers-net-fsl-mc-mark-mc-reserved-memory-no-map.patch \
+            file://0047-drivers-net-fsl-mc-remove-MMIO-and-CCSR-ranges-from-.patch \
+            file://additions.cfg \
 "
 
 do_configure:append() {

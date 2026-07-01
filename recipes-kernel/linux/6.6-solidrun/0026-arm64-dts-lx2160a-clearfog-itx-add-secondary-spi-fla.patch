@@ -1,0 +1,37 @@
+From 0626a0e0ebf7f1d5505404c0e554373d456f3717 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Wed, 20 May 2026 14:36:05 +0200
+Subject: [PATCH] arm64: dts: lx2160a-clearfog-itx: add secondary spi flash
+
+Add description for the secondary spi (boot) flash on Clearfog-CX and
+Honeycomb boards.
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ .../boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi   | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
+index 126fc5385d8d..9a1781fcddeb 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-itx.dtsi
+@@ -92,6 +92,16 @@ &esdhc0 {
+ 	status = "okay";
+ };
+ 
++&fspi {
++	flash@1 {
++		compatible = "winbond,w25q32", "jedec,spi-nor";
++		reg = <1>;
++		spi-max-frequency = <50000000>;
++		spi-rx-bus-width = <1>;
++		spi-tx-bus-width = <1>;
++	};
++};
++
+ &pcie3 {
+ 	status = "okay";
+ };
+-- 
+2.51.0
+

@@ -1,0 +1,2273 @@
+From 88381e8dc30e1dc2bf22f355b0590f42afc4cb02 Mon Sep 17 00:00:00 2001
+From: Josua Mayer <josua@solid-run.com>
+Date: Mon, 15 Jun 2026 12:57:44 +0200
+Subject: [PATCH 32/32] arm64: dts: add fsl-lx2160a-twins left side
+
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/fsl-lx2160a-half-twins.dts  | 685 +----------------
+ .../freescale/fsl-lx2160a-twins-control.dtsi  |  66 ++
+ .../dts/freescale/fsl-lx2160a-twins-left.dts  |  16 +
+ .../dts/freescale/fsl-lx2160a-twins-right.dts | 717 +-----------------
+ .../boot/dts/freescale/fsl-lx2160a-twins.dtsi | 648 ++++++++++++++++
+ 6 files changed, 737 insertions(+), 1396 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-control.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-left.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2160a-twins.dtsi
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 83a49f96be63..241c657e622b 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -48,6 +48,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-half-twins.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-honeycomb.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-twins-left.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-twins-right.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-clearfog.dtb
+ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+index f12e60e1fe94..d47ce98586dc 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-half-twins.dts
+@@ -6,282 +6,22 @@
+ 
+ /dts-v1/;
+ 
+-#include <dt-bindings/leds/common.h>
+-
+ #include "fsl-lx2160a.dtsi"
+ #include "fsl-lx2160a-cex7.dtsi"
++#include "fsl-lx2160a-twins.dtsi"
++#include "fsl-lx2160a-twins-control.dtsi"
+ 
+ / {
+ 	compatible = "solidrun,twins-single", "solidrun,lx2160a-cex7", "fsl,lx2160a";
+ 	model = "SolidRun LX2160A SolidWAN Single";
+ 
+ 	aliases {
+-		gpio0 = &gpio0;
+-		gpio1 = &gpio1;
+-		gpio2 = &gpio2;
+-		gpio3 = &gpio3;
+-		gpio4 = &expander0;
+-		gpio5 = &expander1;
+ 		gpio6 = &expander2;
+ 		gpio7 = &expander3;
+-		i2c0 = &i2c0;
+-		i2c1 = &i2c2;
+-		i2c2 = &i2c4;
+-		i2c3 = &fan_i2c;
+-		i2c4 = &power_i2c;
+-		i2c5 = &i2c_smb;
+-		i2c6 = &sfp0_i2c;
+-		i2c7 = &sfp1_i2c;
+-		i2c8 = &sfp2_i2c;
+-		i2c9 = &sfp3_i2c;
+-		i2c10 = &twins_sfp_c1_at_i2c;
+-		i2c11 = &twins_sfp_c1_ab_i2c;
+-		i2c12 = &twins_sfp_c1_bt_i2c;
+-		i2c13 = &twins_sfp_c1_bb_i2c;
+-		i2c14 = &twins_sfp_c2_at_i2c;
+-		i2c15 = &twins_sfp_c2_ab_i2c;
+-		i2c16 = &twins_sfp_c2_bt_i2c;
+-		i2c17 = &twins_sfp_c2_bb_i2c;
+-		i2c18 = &twins_sfp_c3_at_i2c;
+-		i2c19 = &twins_sfp_c3_ab_i2c;
+-		i2c20 = &twins_sfp_c3_bt_i2c;
+-		i2c21 = &twins_sfp_c3_bb_i2c;
+ 		i2c22 = &htwins_sfp_c3_at_i2c;
+ 		i2c23 = &htwins_sfp_c3_ab_i2c;
+ 		i2c24 = &htwins_sfp_c3_bt_i2c;
+ 		i2c25 = &htwins_sfp_c3_bb_i2c;
+-		i2c26 = &ddr_i2c;
+-		mmc0 = &esdhc0;
+-		mmc1 = &esdhc1;
+-		serial0 = &uart0;
+-		serial1 = &uart1;
+-	};
+-
+-	chosen {
+-		stdout-path = "serial0:115200n8";
+-	};
+-
+-	leds {
+-		compatible = "gpio-leds";
+-
+-		led_ht_c3_bt: led-sfp-1 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <1>;
+-			gpios = <&expander3 14 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac5>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_ht_c3_bb: led-sfp-2 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <2>;
+-			gpios = <&expander3 13 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac15>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_ht_c3_at: led-sfp-3 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <3>;
+-			gpios = <&expander3 11 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac6>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_ht_c3_ab: led-sfp-4 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <4>;
+-			gpios = <&expander3 12 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac11>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_bt: led-sfp-9 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <9>;
+-			gpios = <&expander1 4 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac4>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_bb: led-sfp-10 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <10>;
+-			gpios = <&expander1 3 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac17>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_at: led-sfp-11 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <11>;
+-			gpios = <&expander1 1 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac3>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_ab: led-sfp-12 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <12>;
+-			gpios = <&expander1 2 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac12>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_bt: led-sfp-13 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <13>;
+-			gpios = <&expander1 10 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac8>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_bb: led-sfp-14 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <14>;
+-			gpios = <&expander1 9 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac16>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_at: led-sfp-15 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <15>;
+-			gpios = <&expander1 5 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac7>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_ab: led-sfp-16 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <16>;
+-			gpios = <&expander1 6 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac18>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_bt: led-sfp-17 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <17>;
+-			gpios = <&expander1 14 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac10>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_bb: led-sfp-18 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <18>;
+-			gpios = <&expander1 13 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac14>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_at: led-sfp-19 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <19>;
+-			gpios = <&expander1 11 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac9>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_ab: led-sfp-20 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <20>;
+-			gpios = <&expander1 12 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac13>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led-status {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_STATUS;
+-			function-enumerator = <0>;
+-			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
+-			linux,default-trigger = "heartbeat";
+-		};
+-
+-		led-status-twin {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_STATUS;
+-			function-enumerator = <1>;
+-			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
+-		};
+-
+-		led-fault {
+-			color = <LED_COLOR_ID_YELLOW>;
+-			default-state = "off";
+-			function = LED_FUNCTION_FAULT;
+-			function-enumerator = <0>;
+-			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+-			panic-indicator;
+-		};
+-
+-		led-fault-twin {
+-			color = <LED_COLOR_ID_YELLOW>;
+-			default-state = "off";
+-			function = LED_FUNCTION_FAULT;
+-			function-enumerator = <1>;
+-			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
+-		};
+-	};
+-
+-	mux-controller {
+-		compatible = "gpio-mux";
+-		#mux-control-cells = <0>;
+-		/*
+-		 * This gpio controlled mux can route the tacho signals of 6 PWM FAN connectors
+-		 * to the tacho inputs of both CEX-7 modules (twins).
+-		 *
+-		 * The first twin controls this mux and monitors four fan connectors, two intended
+-		 * for itself, and two for the OCP card.
+-		 *
+-		 * The second twin monitors only two fan connectors intended for itself.
+-		 *
+-		 * The table below maps selector GPIO states to monitored fan connector per twin:
+-		 *
+-		 * | SEL1 | SEL0 | Twin 1 | Twin 2 |
+-		 * | ---: | ---: | :------| ------ |
+-		 * |    0 |    0 | J10    |  J5024 |
+-		 * |    0 |    1 | J5016  |  J5024 |
+-		 * |    1 |    0 | J5026  |  J5025 |
+-		 * |    1 |    1 | J5013  |  J5025 |
+-		 */
+-		mux-gpios = <&expander0 8 GPIO_ACTIVE_HIGH>, /* SEL0 */
+-			    <&expander0 15 GPIO_ACTIVE_HIGH>; /* SEL1 */
+ 	};
+ 
+ 	ht_c3_bt_sfp: sfp-1 {
+@@ -311,158 +51,6 @@ ht_c3_ab_sfp: sfp-4 {
+ 		maximum-power-milliwatt = <2000>;
+ 		mod-def0-gpios = <&expander2 12 GPIO_ACTIVE_LOW>;
+ 	};
+-
+-	c1_bt_sfp: sfp-9 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 3 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_bb_sfp: sfp-10 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 4 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_at_sfp: sfp-11 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 1 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_ab_sfp: sfp-12 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 2 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_bt_sfp: sfp-13 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 9 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_bb_sfp: sfp-14 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 10 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_at_sfp: sfp-15 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 5 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_ab_sfp: sfp-16 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 6 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_bt_sfp: sfp-17 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 13 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_bb_sfp: sfp-18 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 14 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_at_sfp: sfp-19 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 11 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_ab_sfp: sfp-20 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 12 GPIO_ACTIVE_LOW>;
+-	};
+-};
+-
+-/*
+- * This board supports industrial grade temperatures,
+- * the LX2160A SoC maximum junction temperature is 105°C.
+- *
+- * Raise thermal thresholds to allow operation near maximum temperature.
+- */
+-&ccn_dpaa_alert {
+-	temperature = <100000>;
+-};
+-
+-&ccn_dpaa_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster2_3_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster2_3_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster4_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster4_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster5_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster5_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster6_7_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster6_7_crit {
+-	temperature = <105000>;
+-};
+-
+-&dce_qbman_alert {
+-	temperature = <100000>;
+-};
+-
+-&dce_qbman_crit {
+-	temperature = <105000>;
+-};
+-
+-/* sfp port 11 */
+-&dpmac3 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 7>;
+-	sfp = <&c1_at_sfp>;
+-};
+-
+-/* sfp port 9 */
+-&dpmac4 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 6>;
+-	sfp = <&c1_bt_sfp>;
+ };
+ 
+ /* sfp port 1 */
+@@ -479,34 +67,6 @@ &dpmac6 {
+ 	sfp = <&ht_c3_at_sfp>;
+ };
+ 
+-/* sfp port 15 */
+-&dpmac7 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 3>;
+-	sfp = <&c2_at_sfp>;
+-};
+-
+-/* sfp port 13 */
+-&dpmac8 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 2>;
+-	sfp = <&c2_bt_sfp>;
+-};
+-
+-/* sfp port 19 */
+-&dpmac9 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 1>;
+-	sfp = <&c3_at_sfp>;
+-};
+-
+-/* sfp port 17 */
+-&dpmac10 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 0>;
+-	sfp = <&c3_bt_sfp>;
+-};
+-
+ /* sfp port 4 */
+ &dpmac11 {
+ 	managed = "in-band-status";
+@@ -514,27 +74,6 @@ &dpmac11 {
+ 	sfp = <&ht_c3_ab_sfp>;
+ };
+ 
+-/* sfp port 12 */
+-&dpmac12 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 1>;
+-	sfp = <&c1_ab_sfp>;
+-};
+-
+-/* sfp port 20 */
+-&dpmac13 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 6>;
+-	sfp = <&c3_ab_sfp>;
+-};
+-
+-/* sfp port 18 */
+-&dpmac14 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 7>;
+-	sfp = <&c3_bb_sfp>;
+-};
+-
+ /* sfp port 2 */
+ &dpmac15 {
+ 	managed = "in-band-status";
+@@ -542,55 +81,7 @@ &dpmac15 {
+ 	sfp = <&ht_c3_bb_sfp>;
+ };
+ 
+-/* sfp port 14 */
+-&dpmac16 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 5>;
+-	sfp = <&c2_bb_sfp>;
+-};
+-
+-/* sfp port 10 */
+-&dpmac17 {
+-	/* override connection to on-COM phy */
+-	/delete-property/ phy-handle;
+-	/delete-property/ phy-connection-type;
+-	managed = "in-band-status";
+-	phys = <&serdes_2 2>;
+-	sfp = <&c1_bb_sfp>;
+-};
+-
+-/* sfp port 16 */
+-&dpmac18 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 3>;
+-	sfp = <&c2_ab_sfp>;
+-};
+-
+-&esdhc0 {
+-	/*
+-	 * Disable 1.8V modes so that microsd state is same between
+-	 * power-on-reset, u-boot and linux.
+-	 * This avoids sporadic read errors after hard reset with some cards.
+-	 */
+-	no-1-8-v;
+-	status = "okay";
+-};
+-
+ &i2c2 {
+-	expander0: gpio@20 {
+-		compatible = "nxp,pca9555";
+-		reg = <0x20>;
+-		#gpio-cells = <2>;
+-		gpio-controller;
+-	};
+-
+-	expander1: gpio@21 {
+-		compatible = "nxp,pca9555";
+-		reg = <0x21>;
+-		#gpio-cells = <2>;
+-		gpio-controller;
+-	};
+-
+ 	expander2: gpio@24 {
+ 		compatible = "nxp,pca9555";
+ 		reg = <0x24>;
+@@ -637,106 +128,6 @@ htwins_sfp_c3_bb_i2c: i2c@6 {
+ 			#size-cells = <0>;
+ 		};
+ 	};
+-
+-	i2c-mux@76 {
+-		compatible = "nxp,pca9547";
+-		reg = <0x76>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		i2c-mux-idle-disconnect;
+-
+-		twins_sfp_c1_at_i2c: i2c@1 {
+-			reg = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_ab_i2c: i2c@2 {
+-			reg = <2>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_bt_i2c: i2c@3 {
+-			reg = <3>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_bb_i2c: i2c@4 {
+-			reg = <4>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_at_i2c: i2c@5 {
+-			reg = <5>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_ab_i2c: i2c@6 {
+-			reg = <6>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-	};
+-
+-	i2c-mux@77 {
+-		compatible = "nxp,pca9547";
+-		reg = <0x77>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		i2c-mux-idle-disconnect;
+-
+-		twins_sfp_c2_bt_i2c: i2c@1 {
+-			reg = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_bb_i2c: i2c@2 {
+-			reg = <2>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_at_i2c: i2c@3 {
+-			reg = <3>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_ab_i2c: i2c@4 {
+-			reg = <4>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_bt_i2c: i2c@5 {
+-			reg = <5>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_bb_i2c: i2c@6 {
+-			reg = <6>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-	};
+-};
+-
+-&pcie5 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio3 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio4 {
+-	status = "okay";
+ };
+ 
+ &pcs_mdio5 {
+@@ -747,82 +138,10 @@ &pcs_mdio6 {
+ 	status = "okay";
+ };
+ 
+-&pcs_mdio7 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio8 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio9 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio10 {
+-	status = "okay";
+-};
+-
+ &pcs_mdio11 {
+ 	status = "okay";
+ };
+ 
+-&pcs_mdio12 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio13 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio14 {
+-	status = "okay";
+-};
+-
+ &pcs_mdio15 {
+ 	status = "okay";
+ };
+-
+-&pcs_mdio16 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio17 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio18 {
+-	status = "okay";
+-};
+-
+-&rgmii_phy1 {
+-	/*
+-	 * COM has a phy at address 1 connected to SoC Ethernet Controller 1.
+-	 * It competes for WRIOP MAC17, and no connector has been wired.
+-	 */
+-	status = "disabled";
+-};
+-
+-&serdes_2 {
+-	status = "okay";
+-};
+-
+-&uart0 {
+-	status = "okay";
+-};
+-
+-&uart1 {
+-	status = "okay";
+-};
+-
+-&usb0 {
+-	status = "okay";
+-};
+-
+-&wriop_alert {
+-	temperature = <100000>;
+-};
+-
+-&wriop_crit {
+-	temperature = <105000>;
+-};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-control.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-control.dtsi
+new file mode 100644
+index 000000000000..daefdbf7fb54
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-control.dtsi
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++//
++// Copyright 2026 SolidRun Ltd.
++
++/ {
++	leds {
++		led-status {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_STATUS;
++			function-enumerator = <0>;
++			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "heartbeat";
++		};
++
++		led-status-twin {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_STATUS;
++			function-enumerator = <1>;
++			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
++		};
++
++		led-fault {
++			color = <LED_COLOR_ID_YELLOW>;
++			default-state = "off";
++			function = LED_FUNCTION_FAULT;
++			function-enumerator = <0>;
++			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
++			panic-indicator;
++		};
++
++		led-fault-twin {
++			color = <LED_COLOR_ID_YELLOW>;
++			default-state = "off";
++			function = LED_FUNCTION_FAULT;
++			function-enumerator = <1>;
++			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	mux-controller {
++		compatible = "gpio-mux";
++		#mux-control-cells = <0>;
++		/*
++		 * This gpio controlled mux can route the tacho signals of 6 PWM FAN connectors
++		 * to the tacho inputs of both CEX-7 modules (twins).
++		 *
++		 * The first twin controls this mux and monitors four fan connectors, two intended
++		 * for itself, and two for the OCP card.
++		 *
++		 * The second twin monitors only two fan connectors intended for itself.
++		 *
++		 * The table below maps selector GPIO states to monitored fan connector per twin:
++		 *
++		 * | SEL1 | SEL0 | Twin 1 | Twin 2 |
++		 * | ---: | ---: | :------| ------ |
++		 * |    0 |    0 | J10    |  J5024 |
++		 * |    0 |    1 | J5016  |  J5024 |
++		 * |    1 |    0 | J5026  |  J5025 |
++		 * |    1 |    1 | J5013  |  J5025 |
++		 */
++		mux-gpios = <&expander0 8 GPIO_ACTIVE_HIGH>, /* SEL0 */
++			    <&expander0 15 GPIO_ACTIVE_HIGH>; /* SEL1 */
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-left.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-left.dts
+new file mode 100644
+index 000000000000..2d019d3f131f
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-left.dts
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++//
++// Device Tree file for left side LX2160A CEX-7 on Twins board in dual assembly.
++//
++// Copyright 2026 SolidRun Ltd.
++
++/dts-v1/;
++
++#include "fsl-lx2160a.dtsi"
++#include "fsl-lx2160a-cex7.dtsi"
++#include "fsl-lx2160a-twins.dtsi"
++
++/ {
++	compatible = "solidrun,twins-left", "solidrun,lx2160a-cex7", "fsl,lx2160a";
++	model = "SolidRun LX2160A SolidWAN Dual (Left)";
++};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-right.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-right.dts
+index 80acb51419b7..ab9d55976465 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-right.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins-right.dts
+@@ -1,726 +1,17 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ //
+-// Device Tree file for single LX2160A CEX-7 on Twins board.
++// Device Tree file for right side LX2160A CEX-7 on Twins board in dual assembly.
+ //
+-// Copyright 2022 SolidRun Ltd.
++// Copyright 2026 SolidRun Ltd.
+ 
+ /dts-v1/;
+ 
+-#include <dt-bindings/leds/common.h>
+-
+ #include "fsl-lx2160a.dtsi"
+ #include "fsl-lx2160a-cex7.dtsi"
++#include "fsl-lx2160a-twins.dtsi"
++#include "fsl-lx2160a-twins-control.dtsi"
+ 
+ / {
+ 	compatible = "solidrun,twins-right", "solidrun,lx2160a-cex7", "fsl,lx2160a";
+ 	model = "SolidRun LX2160A SolidWAN Dual (Right)";
+-
+-	aliases {
+-		gpio0 = &gpio0;
+-		gpio1 = &gpio1;
+-		gpio2 = &gpio2;
+-		gpio3 = &gpio3;
+-		gpio4 = &expander0;
+-		gpio5 = &expander1;
+-		i2c0 = &i2c0;
+-		i2c1 = &i2c2;
+-		i2c2 = &i2c4;
+-		i2c3 = &fan_i2c;
+-		i2c4 = &power_i2c;
+-		i2c5 = &i2c_smb;
+-		i2c6 = &sfp0_i2c;
+-		i2c7 = &sfp1_i2c;
+-		i2c8 = &sfp2_i2c;
+-		i2c9 = &sfp3_i2c;
+-		i2c10 = &twins_sfp_c1_at_i2c;
+-		i2c11 = &twins_sfp_c1_ab_i2c;
+-		i2c12 = &twins_sfp_c1_bt_i2c;
+-		i2c13 = &twins_sfp_c1_bb_i2c;
+-		i2c14 = &twins_sfp_c2_at_i2c;
+-		i2c15 = &twins_sfp_c2_ab_i2c;
+-		i2c16 = &twins_sfp_c2_bt_i2c;
+-		i2c17 = &twins_sfp_c2_bb_i2c;
+-		i2c18 = &twins_sfp_c3_at_i2c;
+-		i2c19 = &twins_sfp_c3_ab_i2c;
+-		i2c20 = &twins_sfp_c3_bt_i2c;
+-		i2c21 = &twins_sfp_c3_bb_i2c;
+-		i2c26 = &ddr_i2c;
+-		mmc0 = &esdhc0;
+-		mmc1 = &esdhc1;
+-		serial0 = &uart0;
+-	};
+-
+-	chosen {
+-		stdout-path = "serial0:115200n8";
+-	};
+-
+-	leds {
+-		compatible = "gpio-leds";
+-
+-		led_c1_bt: led-sfp-9 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <9>;
+-			gpios = <&expander1 4 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac4>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_bb: led-sfp-10 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <10>;
+-			gpios = <&expander1 3 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac17>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_at: led-sfp-11 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <11>;
+-			gpios = <&expander1 1 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac3>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c1_ab: led-sfp-12 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <12>;
+-			gpios = <&expander1 2 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac12>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_bt: led-sfp-13 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <13>;
+-			gpios = <&expander1 10 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac8>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_bb: led-sfp-14 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <14>;
+-			gpios = <&expander1 9 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac16>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_at: led-sfp-15 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <15>;
+-			gpios = <&expander1 5 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac7>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c2_ab: led-sfp-16 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <16>;
+-			gpios = <&expander1 6 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac18>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_bt: led-sfp-17 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <17>;
+-			gpios = <&expander1 14 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac10>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_bb: led-sfp-18 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <18>;
+-			gpios = <&expander1 13 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac14>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_at: led-sfp-19 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <19>;
+-			gpios = <&expander1 11 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac9>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led_c3_ab: led-sfp-20 {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_LAN;
+-			function-enumerator = <20>;
+-			gpios = <&expander1 12 GPIO_ACTIVE_LOW>;
+-			trigger-sources = <&dpmac13>;
+-			linux,default-trigger = "netdev";
+-		};
+-
+-		led-status {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_STATUS;
+-			function-enumerator = <0>;
+-			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
+-			linux,default-trigger = "heartbeat";
+-		};
+-
+-		led-status-twin {
+-			color = <LED_COLOR_ID_GREEN>;
+-			default-state = "off";
+-			function = LED_FUNCTION_STATUS;
+-			function-enumerator = <1>;
+-			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
+-		};
+-
+-		led-fault {
+-			color = <LED_COLOR_ID_YELLOW>;
+-			default-state = "off";
+-			function = LED_FUNCTION_FAULT;
+-			function-enumerator = <0>;
+-			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+-			panic-indicator;
+-		};
+-
+-		led-fault-twin {
+-			color = <LED_COLOR_ID_YELLOW>;
+-			default-state = "off";
+-			function = LED_FUNCTION_FAULT;
+-			function-enumerator = <1>;
+-			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
+-		};
+-	};
+-
+-	mux-controller {
+-		compatible = "gpio-mux";
+-		#mux-control-cells = <0>;
+-		/*
+-		 * This gpio controlled mux can route the tacho signals of 6 PWM FAN connectors
+-		 * to the tacho inputs of both CEX-7 modules (twins).
+-		 *
+-		 * The first twin controls this mux and monitors four fan connectors, two intended
+-		 * for itself, and two for the OCP card.
+-		 *
+-		 * The second twin monitors only two fan connectors intended for itself.
+-		 *
+-		 * The table below maps selector GPIO states to monitored fan connector per twin:
+-		 *
+-		 * | SEL1 | SEL0 | Twin 1 | Twin 2 |
+-		 * | ---: | ---: | :------| ------ |
+-		 * |    0 |    0 | J10    |  J5024 |
+-		 * |    0 |    1 | J5016  |  J5024 |
+-		 * |    1 |    0 | J5026  |  J5025 |
+-		 * |    1 |    1 | J5013  |  J5025 |
+-		 */
+-		mux-gpios = <&expander0 8 GPIO_ACTIVE_HIGH>, /* SEL0 */
+-			    <&expander0 15 GPIO_ACTIVE_HIGH>; /* SEL1 */
+-	};
+-
+-	c1_bt_sfp: sfp-9 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 3 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_bb_sfp: sfp-10 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 4 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_at_sfp: sfp-11 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 1 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c1_ab_sfp: sfp-12 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c1_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 2 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_bt_sfp: sfp-13 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 9 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_bb_sfp: sfp-14 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 10 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_at_sfp: sfp-15 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 5 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c2_ab_sfp: sfp-16 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c2_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 6 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_bt_sfp: sfp-17 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_bt_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 13 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_bb_sfp: sfp-18 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_bb_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 14 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_at_sfp: sfp-19 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_at_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 11 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	c3_ab_sfp: sfp-20 {
+-		compatible = "sff,sfp";
+-		i2c-bus = <&twins_sfp_c3_ab_i2c>;
+-		maximum-power-milliwatt = <2000>;
+-		mod-def0-gpios = <&expander0 12 GPIO_ACTIVE_LOW>;
+-	};
+-};
+-
+-/*
+- * This board supports industrial grade temperatures,
+- * the LX2160A SoC maximum junction temperature is 105°C.
+- *
+- * Raise thermal thresholds to allow operation near maximum temperature.
+- */
+-&ccn_dpaa_alert {
+-	temperature = <100000>;
+-};
+-
+-&ccn_dpaa_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster2_3_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster2_3_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster4_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster4_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster5_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster5_crit {
+-	temperature = <105000>;
+-};
+-
+-&cluster6_7_alert {
+-	temperature = <100000>;
+-};
+-
+-&cluster6_7_crit {
+-	temperature = <105000>;
+-};
+-
+-&dce_qbman_alert {
+-	temperature = <100000>;
+-};
+-
+-&dce_qbman_crit {
+-	temperature = <105000>;
+-};
+-
+-/* sfp port 11 */
+-&dpmac3 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 7>;
+-	sfp = <&c1_at_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 9 */
+-&dpmac4 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 6>;
+-	sfp = <&c1_bt_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 1 */
+-&dpmac5 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 5>;
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R692, R693, R694, R695, R682, R683, R684, R685) */
+-	/* twins assembly: 10gkr with dual retimer */
+-};
+-
+-/* sfp port 3 */
+-&dpmac6 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 4>;
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R690, R691, R696, R697, R674, R675, R676, R677) */
+-	/* twins assembly: 10gkr with dual retimer */
+-};
+-
+-/* sfp port 15 */
+-&dpmac7 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 3>;
+-	sfp = <&c2_at_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 13 */
+-&dpmac8 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 2>;
+-	sfp = <&c2_bt_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 19 */
+-&dpmac9 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 1>;
+-	sfp = <&c3_at_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 17 */
+-&dpmac10 {
+-	managed = "in-band-status";
+-	phys = <&serdes_1 0>;
+-	sfp = <&c3_bt_sfp>;
+-	// checked
+-};
+-
+-/* sfp port 4 */
+-&dpmac11 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 0>;
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R678, R679, R680, R681) */
+-};
+-
+-/* sfp port 12 */
+-&dpmac12 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 1>;
+-	sfp = <&c1_ab_sfp>;
+-};
+-
+-/* sfp port 20 */
+-&dpmac13 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 6>;
+-	sfp = <&c3_ab_sfp>;
+-};
+-
+-/* sfp port 18 */
+-&dpmac14 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 7>;
+-	sfp = <&c3_bb_sfp>;
+-};
+-
+-/* sfp port 2 */
+-&dpmac15 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 4>;
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R686, R687, R688, R689) */
+-};
+-
+-/* sfp port 14 */
+-&dpmac16 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 5>;
+-	sfp = <&c2_bb_sfp>;
+-};
+-
+-/* sfp port 10 */
+-&dpmac17 {
+-	/* override connection to on-COM phy */
+-	/delete-property/ phy-handle;
+-	/delete-property/ phy-connection-type;
+-	managed = "in-band-status";
+-	phys = <&serdes_2 2>;
+-	sfp = <&c1_bb_sfp>;
+-};
+-
+-/* sfp port 16 */
+-&dpmac18 {
+-	managed = "in-band-status";
+-	phys = <&serdes_2 3>;
+-	sfp = <&c2_ab_sfp>;
+-};
+-
+-&esdhc0 {
+-	/*
+-	 * Disable 1.8V modes so that microsd state is same between
+-	 * power-on-reset, u-boot and linux.
+-	 * This avoids sporadic read errors after hard reset with some cards.
+-	 */
+-	no-1-8-v;
+-	status = "okay";
+-};
+-
+-&i2c2 {
+-	expander0: gpio@20 {
+-		compatible = "nxp,pca9555";
+-		reg = <0x20>;
+-		#gpio-cells = <2>;
+-		gpio-controller;
+-	};
+-
+-	expander1: gpio@21 {
+-		compatible = "nxp,pca9555";
+-		reg = <0x21>;
+-		#gpio-cells = <2>;
+-		gpio-controller;
+-	};
+-
+-	/* twins assembly: gpio@24 ht-c3 sfp modabs gpio not connected */
+-
+-	/* twins assembly: gpio@25 ht-c3 sfp gpio led not connected */
+-
+-	/* twins assembly: i2c-mux@73 ht-c3 sfp i2c not connected */
+-
+-	i2c-mux@76 {
+-		compatible = "nxp,pca9547";
+-		reg = <0x76>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		i2c-mux-idle-disconnect;
+-
+-		twins_sfp_c1_at_i2c: i2c@1 {
+-			reg = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_ab_i2c: i2c@2 {
+-			reg = <2>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_bt_i2c: i2c@3 {
+-			reg = <3>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c1_bb_i2c: i2c@4 {
+-			reg = <4>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_at_i2c: i2c@5 {
+-			reg = <5>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_ab_i2c: i2c@6 {
+-			reg = <6>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-	};
+-
+-	i2c-mux@77 {
+-		compatible = "nxp,pca9547";
+-		reg = <0x77>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		i2c-mux-idle-disconnect;
+-
+-		twins_sfp_c2_bt_i2c: i2c@1 {
+-			reg = <1>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c2_bb_i2c: i2c@2 {
+-			reg = <2>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_at_i2c: i2c@3 {
+-			reg = <3>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_ab_i2c: i2c@4 {
+-			reg = <4>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_bt_i2c: i2c@5 {
+-			reg = <5>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-
+-		twins_sfp_c3_bb_i2c: i2c@6 {
+-			reg = <6>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-		};
+-	};
+-};
+-
+-&pcie5 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio3 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio4 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio5 {
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R692, R693, R694, R695, R682, R683, R684, R685) */
+-	/* twins assembly: 10gkr with dual retimer */
+-};
+-
+-&pcs_mdio6 {
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R690, R691, R696, R697, R674, R675, R676, R677) */
+-	/* twins assembly: 10gkr with dual retimer */
+-};
+-
+-&pcs_mdio7 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio8 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio9 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio10 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio11 {
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R678, R679, R680, R681) */
+-};
+-
+-&pcs_mdio12 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio13 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio14 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio15 {
+-	status = "disabled";
+-	/* twins assembly: sfp not connected (R686, R687, R688, R689) */
+-};
+-
+-&pcs_mdio16 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio17 {
+-	status = "okay";
+-};
+-
+-&pcs_mdio18 {
+-	status = "okay";
+-};
+-
+-&rgmii_phy1 {
+-	/*
+-	 * COM has a phy at address 1 connected to SoC Ethernet Controller 1.
+-	 * It competes for WRIOP MAC17, and no connector has been wired.
+-	 */
+-	status = "disabled";
+-};
+-
+-&serdes_2 {
+-	status = "okay";
+-};
+-
+-&uart0 {
+-	status = "okay";
+-};
+-
+-&usb0 {
+-	status = "okay";
+-};
+-
+-&wriop_alert {
+-	temperature = <100000>;
+-};
+-
+-&wriop_crit {
+-	temperature = <105000>;
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins.dtsi
+new file mode 100644
+index 000000000000..17567c1f971c
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-twins.dtsi
+@@ -0,0 +1,648 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++//
++// Copyright 2026 SolidRun Ltd.
++
++#include <dt-bindings/leds/common.h>
++
++/ {
++	compatible = "solidrun,twins", "solidrun,lx2160a-cex7", "fsl,lx2160a";
++	model = "SolidRun LX2160A SolidWAN Dual";
++
++	aliases {
++		gpio0 = &gpio0;
++		gpio1 = &gpio1;
++		gpio2 = &gpio2;
++		gpio3 = &gpio3;
++		gpio4 = &expander0;
++		gpio5 = &expander1;
++		i2c0 = &i2c0;
++		i2c1 = &i2c2;
++		i2c2 = &i2c4;
++		i2c3 = &fan_i2c;
++		i2c4 = &power_i2c;
++		i2c5 = &i2c_smb;
++		i2c6 = &sfp0_i2c;
++		i2c7 = &sfp1_i2c;
++		i2c8 = &sfp2_i2c;
++		i2c9 = &sfp3_i2c;
++		i2c10 = &twins_sfp_c1_at_i2c;
++		i2c11 = &twins_sfp_c1_ab_i2c;
++		i2c12 = &twins_sfp_c1_bt_i2c;
++		i2c13 = &twins_sfp_c1_bb_i2c;
++		i2c14 = &twins_sfp_c2_at_i2c;
++		i2c15 = &twins_sfp_c2_ab_i2c;
++		i2c16 = &twins_sfp_c2_bt_i2c;
++		i2c17 = &twins_sfp_c2_bb_i2c;
++		i2c18 = &twins_sfp_c3_at_i2c;
++		i2c19 = &twins_sfp_c3_ab_i2c;
++		i2c20 = &twins_sfp_c3_bt_i2c;
++		i2c21 = &twins_sfp_c3_bb_i2c;
++		i2c26 = &ddr_i2c;
++		mmc0 = &esdhc0;
++		mmc1 = &esdhc1;
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led_c1_bt: led-sfp-9 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <9>;
++			gpios = <&expander1 4 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac4>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c1_bb: led-sfp-10 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <10>;
++			gpios = <&expander1 3 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac17>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c1_at: led-sfp-11 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <11>;
++			gpios = <&expander1 1 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac3>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c1_ab: led-sfp-12 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <12>;
++			gpios = <&expander1 2 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac12>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c2_bt: led-sfp-13 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <13>;
++			gpios = <&expander1 10 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac8>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c2_bb: led-sfp-14 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <14>;
++			gpios = <&expander1 9 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac16>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c2_at: led-sfp-15 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <15>;
++			gpios = <&expander1 5 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac7>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c2_ab: led-sfp-16 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <16>;
++			gpios = <&expander1 6 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac18>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c3_bt: led-sfp-17 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <17>;
++			gpios = <&expander1 14 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac10>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c3_bb: led-sfp-18 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <18>;
++			gpios = <&expander1 13 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac14>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c3_at: led-sfp-19 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <19>;
++			gpios = <&expander1 11 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac9>;
++			linux,default-trigger = "netdev";
++		};
++
++		led_c3_ab: led-sfp-20 {
++			color = <LED_COLOR_ID_GREEN>;
++			default-state = "off";
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <20>;
++			gpios = <&expander1 12 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&dpmac13>;
++			linux,default-trigger = "netdev";
++		};
++	};
++
++	c1_bt_sfp: sfp-9 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c1_bt_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 3 GPIO_ACTIVE_LOW>;
++	};
++
++	c1_bb_sfp: sfp-10 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c1_bb_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 4 GPIO_ACTIVE_LOW>;
++	};
++
++	c1_at_sfp: sfp-11 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c1_at_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 1 GPIO_ACTIVE_LOW>;
++	};
++
++	c1_ab_sfp: sfp-12 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c1_ab_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 2 GPIO_ACTIVE_LOW>;
++	};
++
++	c2_bt_sfp: sfp-13 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c2_bt_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 9 GPIO_ACTIVE_LOW>;
++	};
++
++	c2_bb_sfp: sfp-14 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c2_bb_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 10 GPIO_ACTIVE_LOW>;
++	};
++
++	c2_at_sfp: sfp-15 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c2_at_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 5 GPIO_ACTIVE_LOW>;
++	};
++
++	c2_ab_sfp: sfp-16 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c2_ab_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 6 GPIO_ACTIVE_LOW>;
++	};
++
++	c3_bt_sfp: sfp-17 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c3_bt_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 13 GPIO_ACTIVE_LOW>;
++	};
++
++	c3_bb_sfp: sfp-18 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c3_bb_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 14 GPIO_ACTIVE_LOW>;
++	};
++
++	c3_at_sfp: sfp-19 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c3_at_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 11 GPIO_ACTIVE_LOW>;
++	};
++
++	c3_ab_sfp: sfp-20 {
++		compatible = "sff,sfp";
++		i2c-bus = <&twins_sfp_c3_ab_i2c>;
++		maximum-power-milliwatt = <2000>;
++		mod-def0-gpios = <&expander0 12 GPIO_ACTIVE_LOW>;
++	};
++};
++
++/*
++ * This board supports industrial grade temperatures,
++ * the LX2160A SoC maximum junction temperature is 105°C.
++ *
++ * Raise thermal thresholds to allow operation near maximum temperature.
++ */
++&ccn_dpaa_alert {
++	temperature = <100000>;
++};
++
++&ccn_dpaa_crit {
++	temperature = <105000>;
++};
++
++&cluster2_3_alert {
++	temperature = <100000>;
++};
++
++&cluster2_3_crit {
++	temperature = <105000>;
++};
++
++&cluster4_alert {
++	temperature = <100000>;
++};
++
++&cluster4_crit {
++	temperature = <105000>;
++};
++
++&cluster5_alert {
++	temperature = <100000>;
++};
++
++&cluster5_crit {
++	temperature = <105000>;
++};
++
++&cluster6_7_alert {
++	temperature = <100000>;
++};
++
++&cluster6_7_crit {
++	temperature = <105000>;
++};
++
++&dce_qbman_alert {
++	temperature = <100000>;
++};
++
++&dce_qbman_crit {
++	temperature = <105000>;
++};
++
++/* sfp port 11 */
++&dpmac3 {
++	managed = "in-band-status";
++	phys = <&serdes_1 7>;
++	sfp = <&c1_at_sfp>;
++};
++
++/* sfp port 9 */
++&dpmac4 {
++	managed = "in-band-status";
++	phys = <&serdes_1 6>;
++	sfp = <&c1_bt_sfp>;
++};
++
++/* sfp port 1 */
++&dpmac5 {
++	managed = "in-band-status";
++	phys = <&serdes_1 5>;
++	status = "disabled";
++	/* twins assembly: sfp not connected (R692, R693, R694, R695, R682, R683, R684, R685) */
++	/* twins assembly: 10gkr with dual retimer */
++};
++
++/* sfp port 3 */
++&dpmac6 {
++	managed = "in-band-status";
++	phys = <&serdes_1 4>;
++	status = "disabled";
++	/* twins assembly: sfp not connected (R690, R691, R696, R697, R674, R675, R676, R677) */
++	/* twins assembly: 10gkr with dual retimer */
++};
++
++/* sfp port 15 */
++&dpmac7 {
++	managed = "in-band-status";
++	phys = <&serdes_1 3>;
++	sfp = <&c2_at_sfp>;
++};
++
++/* sfp port 13 */
++&dpmac8 {
++	managed = "in-band-status";
++	phys = <&serdes_1 2>;
++	sfp = <&c2_bt_sfp>;
++};
++
++/* sfp port 19 */
++&dpmac9 {
++	managed = "in-band-status";
++	phys = <&serdes_1 1>;
++	sfp = <&c3_at_sfp>;
++};
++
++/* sfp port 17 */
++&dpmac10 {
++	managed = "in-band-status";
++	phys = <&serdes_1 0>;
++	sfp = <&c3_bt_sfp>;
++};
++
++/* sfp port 4 */
++&dpmac11 {
++	managed = "in-band-status";
++	phys = <&serdes_2 0>;
++	status = "disabled";
++	/* twins assembly: sfp not connected (R678, R679, R680, R681) */
++};
++
++/* sfp port 12 */
++&dpmac12 {
++	managed = "in-band-status";
++	phys = <&serdes_2 1>;
++	sfp = <&c1_ab_sfp>;
++};
++
++/* sfp port 20 */
++&dpmac13 {
++	managed = "in-band-status";
++	phys = <&serdes_2 6>;
++	sfp = <&c3_ab_sfp>;
++};
++
++/* sfp port 18 */
++&dpmac14 {
++	managed = "in-band-status";
++	phys = <&serdes_2 7>;
++	sfp = <&c3_bb_sfp>;
++};
++
++/* sfp port 2 */
++&dpmac15 {
++	managed = "in-band-status";
++	phys = <&serdes_2 4>;
++	status = "disabled";
++	/* twins assembly: sfp not connected (R686, R687, R688, R689) */
++};
++
++/* sfp port 14 */
++&dpmac16 {
++	managed = "in-band-status";
++	phys = <&serdes_2 5>;
++	sfp = <&c2_bb_sfp>;
++};
++
++/* sfp port 10 */
++&dpmac17 {
++	/* override connection to on-COM phy */
++	/delete-property/ phy-handle;
++	/delete-property/ phy-connection-type;
++	managed = "in-band-status";
++	phys = <&serdes_2 2>;
++	sfp = <&c1_bb_sfp>;
++};
++
++/* sfp port 16 */
++&dpmac18 {
++	managed = "in-band-status";
++	phys = <&serdes_2 3>;
++	sfp = <&c2_ab_sfp>;
++};
++
++&esdhc0 {
++	/*
++	 * Disable 1.8V modes so that microsd state is same between
++	 * power-on-reset, u-boot and linux.
++	 * This avoids sporadic read errors after hard reset with some cards.
++	 */
++	no-1-8-v;
++	status = "okay";
++};
++
++&i2c2 {
++	expander0: gpio@20 {
++		compatible = "nxp,pca9555";
++		reg = <0x20>;
++		#gpio-cells = <2>;
++		gpio-controller;
++	};
++
++	expander1: gpio@21 {
++		compatible = "nxp,pca9555";
++		reg = <0x21>;
++		#gpio-cells = <2>;
++		gpio-controller;
++	};
++
++	/* twins assembly: gpio@24 ht-c3 sfp modabs gpio not connected */
++
++	/* twins assembly: gpio@25 ht-c3 sfp gpio led not connected */
++
++	/* twins assembly: i2c-mux@73 ht-c3 sfp i2c not connected */
++
++	i2c-mux@76 {
++		compatible = "nxp,pca9547";
++		reg = <0x76>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		i2c-mux-idle-disconnect;
++
++		twins_sfp_c1_at_i2c: i2c@1 {
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c1_ab_i2c: i2c@2 {
++			reg = <2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c1_bt_i2c: i2c@3 {
++			reg = <3>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c1_bb_i2c: i2c@4 {
++			reg = <4>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c2_at_i2c: i2c@5 {
++			reg = <5>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c2_ab_i2c: i2c@6 {
++			reg = <6>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++	};
++
++	i2c-mux@77 {
++		compatible = "nxp,pca9547";
++		reg = <0x77>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		i2c-mux-idle-disconnect;
++
++		twins_sfp_c2_bt_i2c: i2c@1 {
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c2_bb_i2c: i2c@2 {
++			reg = <2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c3_at_i2c: i2c@3 {
++			reg = <3>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c3_ab_i2c: i2c@4 {
++			reg = <4>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c3_bt_i2c: i2c@5 {
++			reg = <5>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++
++		twins_sfp_c3_bb_i2c: i2c@6 {
++			reg = <6>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++		};
++	};
++};
++
++&pcie5 {
++	status = "okay";
++};
++
++&pcs_mdio3 {
++	status = "okay";
++};
++
++&pcs_mdio4 {
++	status = "okay";
++};
++
++&pcs_mdio5 {
++	status = "disabled";
++	/* twins assembly: sfp not connected (R692, R693, R694, R695, R682, R683, R684, R685) */
++	/* twins assembly: 10gkr with dual retimer */
++};
++
++&pcs_mdio6 {
++	status = "disabled";
++	/* twins assembly: sfp not connected (R690, R691, R696, R697, R674, R675, R676, R677) */
++	/* twins assembly: 10gkr with dual retimer */
++};
++
++&pcs_mdio7 {
++	status = "okay";
++};
++
++&pcs_mdio8 {
++	status = "okay";
++};
++
++&pcs_mdio9 {
++	status = "okay";
++};
++
++&pcs_mdio10 {
++	status = "okay";
++};
++
++&pcs_mdio12 {
++	status = "okay";
++};
++
++&pcs_mdio13 {
++	status = "okay";
++};
++
++&pcs_mdio14 {
++	status = "okay";
++};
++
++&pcs_mdio16 {
++	status = "okay";
++};
++
++&pcs_mdio17 {
++	status = "okay";
++};
++
++&pcs_mdio18 {
++	status = "okay";
++};
++
++&rgmii_phy1 {
++	/*
++	 * COM has a phy at address 1 connected to SoC Ethernet Controller 1.
++	 * It competes for WRIOP MAC17, and no connector has been wired.
++	 */
++	status = "disabled";
++};
++
++&serdes_2 {
++	status = "okay";
++};
++
++&i2c_smb {
++	/* retimer@22 */
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++};
++
++&wriop_alert {
++	temperature = <100000>;
++};
++
++&wriop_crit {
++	temperature = <105000>;
++};
+-- 
+2.51.0
+

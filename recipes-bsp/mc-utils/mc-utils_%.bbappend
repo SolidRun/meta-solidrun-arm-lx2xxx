@@ -10,4 +10,7 @@ SRC_URI += "file://0001-add-solidrun-lx2160-cex7-based-clearfog-cx-dpl-dpc.patch
             file://0006-lx2160acex7-clearfog-cx-add-qsfp-40g-4x-10g-configur.patch \
             file://0007-lx2160acex7-add-configuration-for-solidrun-internal-.patch \
             file://0008-lx2160acex7-clearfog-cx-s1_8-s2_0-dpc-allow-modifyin.patch \
+            file://0009-lx2160acex7-twins-change-mac-type-from-phy-to-backpl.patch \
+            file://0010-lx2160acex7-twins-add-separate-half-twins-configurat.patch \
+            file://0011-lx2160acex7-twins-enable-network-interfaces-by-defau.patch \
 "

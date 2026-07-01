@@ -127,6 +127,28 @@ jobs:
               "xspi.bin"
             ]
           },{
+            "machine": "lx2160a-rev2-twins-left",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-twins-left.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-twins-left.rootfs.wic.gz",
+              "fsl-lx2160a-twins-left.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-twins-left.tgz",
+              "xspi.bin"
+            ]
+          },{
+            "machine": "lx2160a-rev2-twins-right",
+            "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
+            "artifacts": [
+              "fsl-image-networking-lx2160a-rev2-twins-right.rootfs.manifest",
+              "fsl-image-networking-lx2160a-rev2-twins-right.rootfs.wic.gz",
+              "fsl-lx2160a-twins-right.dtb",
+              "Image.gz",
+              "modules-lx2160a-rev2-twins-right.tgz",
+              "xspi.bin"
+            ]
+          },{
             "machine": "lx2160a-rev2-honeycomb",
             "targets": ["lx216xa-xspi-image", "fsl-image-networking", "fsl-image-networking-full"],
             "artifacts": [

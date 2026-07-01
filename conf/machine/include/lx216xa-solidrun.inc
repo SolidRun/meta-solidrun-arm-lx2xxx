@@ -19,6 +19,8 @@ KERNEL_DEVICETREE ?= " \
         freescale/fsl-lx2160a-clearfog-cx.dtb \
         freescale/fsl-lx2160a-half-twins.dtb \
         freescale/fsl-lx2160a-honeycomb.dtb \
+        freescale/fsl-lx2160a-twins-left.dtb \
+        freescale/fsl-lx2160a-twins-right.dtb \
         freescale/fsl-lx2162a-clearfog.dtb \
 "
 
@@ -28,6 +30,8 @@ IMAGE_BOOT_FILES:append = " \
     fsl-lx2160a-clearfog-cx.dtb;freescale/fsl-lx2160a-clearfog-cx.dtb \
     fsl-lx2160a-half-twins.dtb;freescale/fsl-lx2160a-half-twins.dtb \
     fsl-lx2160a-honeycomb.dtb;freescale/fsl-lx2160a-honeycomb.dtb \
+    fsl-lx2160a-twins-left.dtb;freescale/fsl-lx2160a-twins-left.dtb \
+    fsl-lx2160a-twins-right.dtb;freescale/fsl-lx2160a-twins-right.dtb \
     fsl-lx2162a-clearfog.dtb;freescale/fsl-lx2162a-clearfog.dtb \
 "
 # HACK: place one sentinel dtb without freescale/ prefix to fix wic image generated extlinux.conf fdtdir path

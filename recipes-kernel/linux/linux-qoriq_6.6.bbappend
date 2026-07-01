@@ -27,6 +27,15 @@ SRC_URI += "file://0001-arm64-dts-freescale-Add-support-for-LX2162-SoM-Clear.pat
             file://0023-arm64-dts-add-description-for-lx2160a-cex7-on-half-t.patch \
             file://0024-net-dpaa2-mac-standalone-fix-netdev-registration-rac.patch \
             file://0025-arm64-dts-fsl-lx2160a-half-twins-fix-microsd-speed-l.patch \
+            file://0026-arm64-dts-lx2160a-clearfog-itx-add-secondary-spi-fla.patch \
+            file://0027-arm64-dts-lx2160a-clearfog-itx-remove-redundant-dts-.patch \
+            file://0028-arm64-dts-lx2160a-clearfog-itx-move-shared-includes-.patch \
+            file://0029-arm64-dts-lx2160a-cex7-add-usb-hub.patch \
+            file://0030-arm64-dts-add-fsl-lx2160a-twins-right-side.patch \
+            file://0031-arm64-dts-Add-support-for-LX2160-Twins-board-in-sing.patch \
+            file://0032-arm64-dts-add-fsl-lx2160a-twins-left-side.patch \
+            file://0033-arm64-dts-lx2160a-twins-add-backplane-connections-wi.patch \
+            file://0034-arm64-dts-lx2160a-half-twins-fix-two-ports-and-leds.patch \
 "
 
 # Enable non-default kernel configs
