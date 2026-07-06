@@ -13,4 +13,8 @@ SRC_URI += "file://0001-add-solidrun-lx2160-cex7-based-clearfog-cx-dpl-dpc.patch
             file://0009-lx2160acex7-twins-change-mac-type-from-phy-to-backpl.patch \
             file://0010-lx2160acex7-twins-add-separate-half-twins-configurat.patch \
             file://0011-lx2160acex7-twins-enable-network-interfaces-by-defau.patch \
+            file://0012-lx2160acex7-clearfog-cx-switch-sfp-port-macs-to-back.patch \
+            file://0013-lx2160acex7-clearfog-cx-activate-linux-netdevs-durin.patch \
+            file://0014-lx2162asom-clearfog-switch-serdes-macs-to-backplane-.patch \
+            file://0015-lx2160acex6-evb-switch-serdes-macs-to-backplane-mode.patch \
 "

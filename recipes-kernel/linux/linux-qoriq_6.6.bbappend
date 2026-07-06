@@ -36,6 +36,7 @@ SRC_URI += "file://0001-arm64-dts-freescale-Add-support-for-LX2162-SoM-Clear.pat
             file://0032-arm64-dts-add-fsl-lx2160a-twins-left-side.patch \
             file://0033-arm64-dts-lx2160a-twins-add-backplane-connections-wi.patch \
             file://0034-arm64-dts-lx2160a-half-twins-fix-two-ports-and-leds.patch \
+            file://0035-arm64-dts-lx2160a-avoid-32-bit-pcie-window-system-ra.patch \
 "
 
 # Enable non-default kernel configs
