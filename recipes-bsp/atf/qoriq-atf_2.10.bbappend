@@ -21,6 +21,10 @@ SRC_URI += "file://0001-fiptool-disable-pedantic-flag-to-avoid-errors-with-o.pat
             file://0014-add-separate-platform-for-solidrun-lx2162a-som.patch \
             file://0015-add-separate-platform-for-solidrun-internal-cex6-eva.patch \
             file://0016-psci-add-build-time-flag-to-disable-SYSTEM_OFF-funct.patch \
+            file://0017-plat-lx2160a-support-build-time-override-for-fip-off.patch \
+            file://0018-feat-driver-nxp-xspi-add-W25Q32-flash-info.patch \
+            file://0019-plat-l2160acex7-add-build-time-settings-for-w25q32-f.patch \
+            file://0020-plat-lx2160a-add-mechanism-for-board-specific-soc_ea.patch \
 "
 
 # set PLATFORM recipe variable from generic machine config ATF_PLATFORM if defined
