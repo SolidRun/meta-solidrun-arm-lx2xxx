@@ -5,6 +5,9 @@ LICENSE = "MIT"
 # This recipe doesn't produce a rootfs, it just packages binaries
 inherit deploy
 
+# offsets are machine-specific
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 # Offsets in 512-byte sectors
 OFFSET_BL2    = "0"
 OFFSET_BL3    = "2048"
@@ -14,6 +17,7 @@ OFFSET_MC_DPL = "26624"
 OFFSET_MC_DPC = "28672"
 OFFSET_DTB    = "30720"
 OFFSET_KERNEL = "32768"
+FLASH_SIZE    = "67108864"
 
 # Dependencies: Ensure all firmware is built and deployed first
 do_compile[depends] += " \
@@ -30,7 +34,7 @@ DTB_NAME = "${@os.path.basename(d.getVar('UBOOT_FDT_FILE') or 'error')}"
 do_compile() {
     # 1. Create a 64MB sparse file filled with 0xFF (typical for erased Flash)
     # Using 0xFF is better for Flash images than 0x00
-    tr '\000' '\377' < /dev/zero | dd of=${B}/xspi.bin bs=1M count=64
+    tr '\000' '\377' < /dev/zero | dd of=${B}/xspi.bin bs=512 count=${FLASH_SIZE}
     
     # prefer auto-boot, fall-back to flexspi_nor
     BL2=${DEPLOY_DIR_IMAGE}/atf/bl2_auto.pbl
@@ -46,7 +50,9 @@ do_compile() {
     dd if=${DEPLOY_DIR_IMAGE}/mc-utils/${MC_DPL} of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_MC_DPL}
     dd if=${DEPLOY_DIR_IMAGE}/mc-utils/${MC_DPC} of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_MC_DPC}
     dd if=${DEPLOY_DIR_IMAGE}/${DTB_NAME} of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_DTB}
-    dd if=${DEPLOY_DIR_IMAGE}/Image.gz of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_KERNEL}
+    if [ -n "${OFFSET_KERNEL}" ]; then
+        dd if=${DEPLOY_DIR_IMAGE}/Image.gz of=${B}/xspi.bin conv=notrunc bs=512 seek=${OFFSET_KERNEL}
+    fi
 }
 
 do_deploy() {
