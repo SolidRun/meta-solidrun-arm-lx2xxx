@@ -17,7 +17,7 @@ OFFSET_MC_DPL = "26624"
 OFFSET_MC_DPC = "28672"
 OFFSET_DTB    = "30720"
 OFFSET_KERNEL = "32768"
-FLASH_SIZE    = "67108864"
+FLASH_SIZE    = "131072"
 
 # Dependencies: Ensure all firmware is built and deployed first
 do_compile[depends] += " \
