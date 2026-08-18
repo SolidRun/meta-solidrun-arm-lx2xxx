@@ -198,6 +198,9 @@ jobs:
           # fetch all other layers from manifest
           repo sync
 
+      - name: Known Issues
+        uses: ./sources/meta-solidrun-arm-lx2xxx/.github/actions/known-issues
+
       - name: Create cache dir
         run: mkdir -p buildcache
 
