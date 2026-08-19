@@ -327,6 +327,8 @@ jobs:
         id: dl_url
         shell: bash {0}
         run: |
+          echo "lx2160a_rev2_clearfog_cx_fsl_image_networking_url=http://ciserver.ci:8000/cipublish/${{ needs.info.outputs.local_artifacts_path }}/lx2160a-rev2-clearfog-cx/fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
+          echo "lx2160a_rev2_clearfog_cx_fsl_image_networking_full_url=http://ciserver.ci:8000/cipublish/${{ needs.info.outputs.local_artifacts_path }}/lx2160a-rev2-clearfog-cx/fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
           echo "lx2162a_rev2_clearfog_fsl_image_networking_url=http://ciserver.ci:8000/cipublish/${{ needs.info.outputs.local_artifacts_path }}/lx2162a-rev2-clearfog/fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
           echo "lx2162a_rev2_clearfog_fsl_image_networking_full_url=http://ciserver.ci:8000/cipublish/${{ needs.info.outputs.local_artifacts_path }}/lx2162a-rev2-clearfog/fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.gz" >> "$GITHUB_OUTPUT"
 
@@ -347,15 +349,29 @@ jobs:
           jobs: |
             [
               {
-                "device_type": "lx2162a-solidrun",
-                "tags": [],
+                "device_type": "lx2",
+                "tags": ["soc-lx2160a-rev2", "lx2160a-cex7", "carrier-clearfog-cx"],
+                "image_url": "${{ steps.dl_url.outputs.lx2160a_rev2_clearfog_cx_fsl_image_networking_url }}",
+                "description": "LX2160A Clearfog-CX Yocto - FSL Network - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
+                "compression": "gz",
+                "all_devices": false
+              }, {
+                "device_type": "lx2",
+                "tags": ["soc-lx2160a-rev2", "lx2160a-cex7", "carrier-clearfog-cx"],
+                "image_url": "${{ steps.dl_url.outputs.lx2160a_rev2_clearfog_cx_fsl_image_networking_full_url }}",
+                "description": "LX2160A Clearfog-CX Yocto - FSL Network - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
+                "compression": "gz",
+                "all_devices": false
+              }, {
+                "device_type": "lx2",
+                "tags": ["lx2162a-som", "carrier-clearfog"],
                 "image_url": "${{ steps.dl_url.outputs.lx2162a_rev2_clearfog_fsl_image_networking_url }}",
                 "description": "LX2162A Clearfog Yocto - FSL Network - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
                 "compression": "gz",
                 "all_devices": false
-              },{
-                "device_type": "lx2162a-solidrun",
-                "tags": [],
+              }, {
+                "device_type": "lx2",
+                "tags": ["lx2162a-som", "carrier-clearfog"],
                 "image_url": "${{ steps.dl_url.outputs.lx2162a_rev2_clearfog_fsl_image_networking_full_url }}",
                 "description": "LX2162A Clearfog Yocto - FSL Network Full - meta-solidrun-armlx2xxx/${{ needs.info.outputs.build_ref }} (${{ needs.info.outputs.build_rev }})",
                 "compression": "gz",
