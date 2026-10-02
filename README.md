@@ -342,5 +342,7 @@ git cherry-pick \
 
 ### Patching Linux / U-Boot / ATF / RCW / DPL / DPC / etc.:
 
-Development is done in [lx2160a_build: branch "develop-ls-6.6.52-2.2.0"](https://github.com/SolidRun/lx2160a_build/tree/develop-ls-6.6.52-2.2.0) first, it serves as the reference BSP for HW validation.
+Development is done in [lx2160a_build: branch "develop-ls-6.6.52-2.2.0"](https://github.com/SolidRun/lx2160a_build/tree/develop-ls-6.6.52-2.2.0) first, it serves as the SolidRun reference BSP for HW validation.
 Patches should be copied without changes from lx2160a_build to this layer.
+
+The full sync procedure, a map of all lx2160a_build files to this layer, and a checking script are in [.agents/skills/sync-lx2160a-build](.agents/skills/sync-lx2160a-build/SKILL.md) - usable by humans and LLM agents alike (see [AGENTS.md](AGENTS.md)).
