@@ -70,18 +70,19 @@ Files in this skill directory:
 
 With an existing checkout: `git -C <dir> fetch && git -C <dir> checkout <reference_branch> && git -C <dir> pull --ff-only`.
 Do not touch uncommitted or untracked files in the user's checkout.
-Without a Yocto `sources` dir, create a minimal one: the SRCREV comparison only needs meta-qoriq and
-meta-freescale, at the revisions pinned in the repo manifest `ls-*-sr.xml` of this layer
-(`<project name="..." revision="...">`), e.g.:
+Without a Yocto `sources` dir, create one from the repo manifest `ls-*-sr.xml` of this layer: one shallow
+clone per `<project>` at its `revision` (tags without `refs/tags/`), in the manifest's `path`. All layers are
+needed - the SRCREV comparison uses meta-qoriq and meta-freescale, the layer dependency check all of them.
+Shallow clones keep this small (no component sources are downloaded), e.g.:
 
 ```sh
 mkdir -p /tmp/sources && cd /tmp/sources
-git clone --depth 1 -b <meta-qoriq revision without refs/tags/, e.g. lf-6.6.52-2.2.0> https://github.com/nxp-qoriq/meta-qoriq
-git init -q meta-freescale && git -C meta-freescale fetch -q --depth 1 https://github.com/Freescale/meta-freescale <meta-freescale revision> \
-    && git -C meta-freescale checkout -q FETCH_HEAD
+git clone -q --depth 1 -b <tag or branch> <remote fetch url>/<name> <name>              # tag or branch revision
+git init -q <name> && git -C <name> fetch -q --depth 1 <remote fetch url>/<name> <sha> \
+    && git -C <name> checkout -q FETCH_HEAD                                             # sha revision
 ```
 
-A full `repo init -m` + `repo sync` also works, but is not needed. Skip the SRCREV comparison only if the user agrees.
+A full `repo init -m` + `repo sync` also works. Skip these checks only if the user agrees.
 
 ## Procedure
 
@@ -90,6 +91,10 @@ is resolved and adding anything that cannot be resolved → verify → commit (i
 report and ask → pull-request (quoting SYNC_TODO.md).
 
 ### 1. Baseline
+
+If there are hand-written commits since the last sync commit (`git log <last sync commit>..HEAD`, excluding
+`sync todo:` commits), run skill [refresh-sync-todo](../refresh-sync-todo/SKILL.md) first, so this sync starts
+from an accurate SYNC_TODO.md.
 
 ```sh
 SKILL=.agents/skills/sync-lx2160a-build
