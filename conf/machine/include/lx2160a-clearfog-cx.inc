@@ -9,3 +9,7 @@ RCWXSPI ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_
 RCWSD ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_18_5_2_sdhc"
 RCWEMMC ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_18_5_2_sdhc"
 RCWAUTO ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_DDR_SPEED}_18_5_2_auto"
+
+# select DTB
+UBOOT_FDT ?= "fsl-lx2160a-clearfog-cx"
+UBOOT_FDT_FILE ?= "freescale/fsl-lx2160a-clearfog-cx.dtb"
