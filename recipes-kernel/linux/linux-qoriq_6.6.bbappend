@@ -37,6 +37,9 @@ SRC_URI += "file://0001-arm64-dts-freescale-Add-support-for-LX2162-SoM-Clear.pat
             file://0033-arm64-dts-lx2160a-twins-add-backplane-connections-wi.patch \
             file://0034-arm64-dts-lx2160a-half-twins-fix-two-ports-and-leds.patch \
             file://0035-arm64-dts-lx2160a-avoid-32-bit-pcie-window-system-ra.patch \
+            file://0036-arm64-dts-lx2160a-clearfog-cx-enable-qsfp-port-macs.patch \
+            file://0037-net-sfp-add-extended-compliance-codes-for-additional.patch \
+            file://0038-net-sfp-bus-handle-extended-compliance-codes-for-100.patch \
 "
 
 # Enable non-default kernel configs
@@ -50,6 +53,8 @@ SRC_URI:append = " file://kgdb.scc"
 SRC_URI:append = " file://pktgen.scc"
 SRC_URI:append = " file://ixgbe.scc"
 SRC_URI:append = " file://sctp.scc"
+SRC_URI:append = " file://disable-imx-gpu-vpu-drivers.scc"
+SRC_URI:append = " file://ebpf-additions.scc"
 
 # linux-qoriq_6.6.bb does not support scc style fragments, add to DELTA_KERNEL_DEFCONFIG instead.
 SRC_URI:append = " file://compressed-modules.cfg"
@@ -62,6 +67,8 @@ SRC_URI:append = " file://kgdb.cfg"
 SRC_URI:append = " file://pktgen.cfg"
 SRC_URI:append = " file://ixgbe.cfg"
 SRC_URI:append = " file://sctp.cfg"
+SRC_URI:append = " file://disable-imx-gpu-vpu-drivers.cfg"
+SRC_URI:append = " file://ebpf-additions.cfg"
 DELTA_KERNEL_DEFCONFIG:append = " compressed-modules.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " amdgpu.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " lx216x-solidrun-drivers.cfg "
@@ -72,3 +79,8 @@ DELTA_KERNEL_DEFCONFIG:append = " kgdb.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " pktgen.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " ixgbe.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " sctp.cfg "
+DELTA_KERNEL_DEFCONFIG:append = " disable-imx-gpu-vpu-drivers.cfg "
+DELTA_KERNEL_DEFCONFIG:append = " ebpf-additions.cfg "
+
+# CONFIG_DEBUG_INFO_BTF (ebpf-additions.cfg) needs pahole and host libelf (resolve_btfids)
+DEPENDS += "elfutils-native pahole-native"

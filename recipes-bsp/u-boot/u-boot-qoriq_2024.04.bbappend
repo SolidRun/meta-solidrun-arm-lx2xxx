@@ -49,6 +49,12 @@ SRC_URI += "file://0001-pci-ls_pcie_g4-Wait-100ms-for-Link-Up-in-ls_pcie_g4_.pat
             file://0045-board-solidrun-lx2160acex7-sync-dts-with-linux-add-f.patch \
             file://0046-drivers-net-fsl-mc-mark-mc-reserved-memory-no-map.patch \
             file://0047-drivers-net-fsl-mc-remove-MMIO-and-CCSR-ranges-from-.patch \
+            file://0048-board-solidrun-lx2160acex7-remove-superfluous-hiding.patch \
+            file://0049-armv8-lx2160a-drop-artificial-reserved-memory-addres.patch \
+            file://0050-efi_loader-only-add-real-dram-to-efi-reserved-memory.patch \
+            file://0051-Revert-drivers-net-fsl-mc-remove-MMIO-and-CCSR-range.patch \
+            file://0052-armv8-sec_firmware-make-the-reserved-CAAM-job-rings-.patch \
+            file://0053-board-solidrun-lx2160acex7-select-correct-secure-job.patch \
             file://additions.cfg \
 "
 
