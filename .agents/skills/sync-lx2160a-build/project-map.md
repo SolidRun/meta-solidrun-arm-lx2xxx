@@ -145,6 +145,7 @@ stays a TODO until the layer supports it explicitly (documented machine or optio
 | LX2160A_CEX6_EVB_3_3_*             | lx2160a-rev2-cex6-evb                          | SolidRun-internal evaluation board |
 | LX2160A_CEX7_CLEARFOG-CX_0_0_0     | n/a                                            | SerDes-less base configuration for bring-up of new boards, not a product |
 | LX2160A_CEX7_CLEARFOG-CX_18_5_*    | lx2160a-clearfog-cx lx2160a-rev2-clearfog-cx   | RCW* SerDes 18_5_2 |
+| LX2160A_CEX7_HONEYCOMB_8_5_*       | lx2160a-honeycomb lx2160a-rev2-honeycomb       | RCW* SerDes 8_5_2 |
 | LX2160A_CEX7_HALF-TWINS_8S_9_2     | lx2160a-rev2-half-twins                        | |
 | LX2160A_CEX7_TWINS-RIGHT_8S_9_2    | lx2160a-rev2-twins-right                       | |
 | LX2160A_CEX7_TWINS-LEFT_8S_9_2     | lx2160a-rev2-twins-left                        | |
