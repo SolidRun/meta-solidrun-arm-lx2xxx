@@ -18,12 +18,15 @@ set -u
 
 usage() {
 	cat <<EOF
-Usage: $0 [-s <yocto-sources-dir>] [-o] [-r <since-commit>] <lx2160a_build-dir>
+Usage: $0 [-s <yocto-sources-dir>] [-o] [-r <since-commit>] [-p] <lx2160a_build-dir>
 
   -s DIR  directory containing meta-qoriq, meta-freescale, ... (e.g. <yocto>/sources);
           enables comparing component base revisions with recipe SRCREVs
   -o      offline: do not query github (git ls-remote) for component release refs
   -r REV  list lx2160a_build commits after REV (default: trailer of the last sync commit)
+  -p      pinned: the lx2160a_build checkout is (detached) at the last synced revision, i.e. the
+          trailer of the last sync commit; checks the layer against that revision instead of the
+          branch head (used by skill refresh-sync-todo)
 EOF
 	exit 2
 }
@@ -31,11 +34,13 @@ EOF
 SOURCES=
 OFFLINE=0
 SINCE=
-while getopts "s:or:h" o; do
+PINNED=0
+while getopts "s:or:ph" o; do
 	case $o in
 	s) SOURCES=$OPTARG ;;
 	o) OFFLINE=1 ;;
 	r) SINCE=$OPTARG ;;
+	p) PINNED=1 ;;
 	*) usage ;;
 	esac
 done
@@ -98,11 +103,25 @@ section "lx2160a_build checkout"
 ubranch=$(git -C "$REF" rev-parse --abbrev-ref HEAD)
 uhead=$(git -C "$REF" rev-parse HEAD)
 echo "      $REF @ $ubranch $uhead"
-[ "$ubranch" = "$REF_BRANCH" ] && ok "branch $ubranch" || fail "lx2160a_build branch is '$ubranch', expected '$REF_BRANCH'"
+LAST_SYNC=$(git -C "$LAYER" log -1 --format=%B --grep='^lx2160a_build: ' |
+	sed -n 's/^lx2160a_build: .* @ \([0-9a-f]\{7,40\}\)$/\1/p' | tail -1)
+if [ $PINNED = 1 ]; then
+	if [ -z "$LAST_SYNC" ]; then
+		fail "-p: no 'lx2160a_build: <branch> @ <sha>' trailer in layer history to pin to"
+	elif [ "$(git -C "$REF" rev-parse -q --verify "$LAST_SYNC^{commit}")" = "$uhead" ]; then
+		ok "pinned at last synced revision $LAST_SYNC"
+	else
+		fail "-p: lx2160a_build checkout is at $uhead, not at the last synced revision $LAST_SYNC"
+	fi
+	git -C "$REF" merge-base --is-ancestor HEAD "origin/$REF_BRANCH" 2>/dev/null ||
+		warn "pinned revision is not on origin/$REF_BRANCH (fetch first?)"
+else
+	[ "$ubranch" = "$REF_BRANCH" ] && ok "branch $ubranch" || fail "lx2160a_build branch is '$ubranch', expected '$REF_BRANCH'"
+fi
 if [ -n "$(git -C "$REF" status --porcelain --untracked-files=no)" ]; then
 	warn "lx2160a_build checkout has uncommitted changes to tracked files"
 fi
-if behind=$(git -C "$REF" rev-list --count HEAD..@{u} 2>/dev/null); then
+if [ $PINNED = 0 ] && behind=$(git -C "$REF" rev-list --count HEAD..@{u} 2>/dev/null); then
 	[ "$behind" = 0 ] && ok "up to date with last fetch of @{u}" || warn "lx2160a_build checkout is $behind commits behind @{u} - pull first"
 fi
 
@@ -547,6 +566,11 @@ else
 		find "$d" -name '*.bb' -printf "%f\t$c\n" | sed 's/\.bb\t/\t/'
 	done <<<"$OTHER")
 	LOCAL_RECIPES=$(find "$LAYER"/recipes-* -name '*.bb' -printf '%f\n' | sed 's/\.bb$//')
+	# listed collections that are not in the sources dir make the check incomplete
+	MISSING=$(for c in $LDEPS; do echo "$OTHER" | cut -f2 | grep -qxF "$c" || echo "$c"; done)
+	[ -n "$MISSING" ] && warn "layer dependencies: listed collection(s) not found in $SOURCES: $(echo $MISSING) -" \
+		"references they provide cannot be resolved; use the full set of layers from the repo manifest"
+
 	# providers <match>: collections (priority order) providing a recipe; <match> is an awk condition on $1
 	providers() { echo "$RIDX" | awk -F'\t' "$1 { print \$2 }" | awk '!s[$0]++'; }
 	# need <reference description> <providers>: satisfied if any provider is listed
@@ -554,7 +578,11 @@ else
 	REPORTED=
 	need() {
 		local what=$1 provs=$2 c
-		[ -z "$provs" ] && { warn "layer dependencies: no provider found for $what"; return; }
+		if [ -z "$provs" ]; then
+			# with layers missing from the sources dir, unresolved references are expected
+			[ -z "$MISSING" ] && warn "layer dependencies: no provider found for $what"
+			return
+		fi
 		for c in $provs; do
 			echo "$LDEPS" | grep -qxF "$c" && { USED="$USED $c"; return; }
 		done
@@ -614,6 +642,7 @@ else
 		done | sort -u)
 	[ $FAILS = "$nfail" ] && ok "LAYERDEPENDS_${COLL} covers every layer used"
 	for c in $LDEPS; do
+		echo "$MISSING" | grep -qxF "$c" && continue
 		echo "$USED" | tr ' ' '\n' | grep -qxF "$c" ||
 			warn "LAYERDEPENDS_${COLL} lists '$c', but nothing in this layer uses it"
 	done

@@ -40,3 +40,4 @@ Skill files are instructions: do not modify them while executing a skill; propos
 | skill | use when |
 | --- | --- |
 | [sync-lx2160a-build](.agents/skills/sync-lx2160a-build/SKILL.md) | syncing patches/configs/boards from lx2160a_build into this layer, or checking whether the layer is behind it |
+| [refresh-sync-todo](.agents/skills/refresh-sync-todo/SKILL.md) | sporadically, most importantly right before the next sync: drop the SYNC_TODO.md open points that hand-written changes resolved since the last sync |
