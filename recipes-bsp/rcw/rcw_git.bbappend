@@ -19,6 +19,7 @@ SRC_URI += "file://0001-lx2162aqds-re-enable-dpmac11.patch \
             file://0015-lx2162asom_rev2-fix-SD1-protocol-3-clocking.patch \
             file://0016-lx2160acex7-lx2162asom-remove-serdes-equalization-se.patch \
             file://0017-lx2160acex7-twins-add-dedicated-half-twins-configura.patch \
+            file://0018-lx2160cex6-7-add-configurations-for-ddr-clocks-1600-.patch \
 "
 
 # set BOARD_TARGETS recipe variable from machine config RCW_BOARDS if defined
