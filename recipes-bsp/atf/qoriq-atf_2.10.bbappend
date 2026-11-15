@@ -25,6 +25,8 @@ SRC_URI += "file://0001-fiptool-disable-pedantic-flag-to-avoid-errors-with-o.pat
             file://0018-feat-driver-nxp-xspi-add-W25Q32-flash-info.patch \
             file://0019-plat-l2160acex7-add-build-time-settings-for-w25q32-f.patch \
             file://0020-plat-lx2160a-add-mechanism-for-board-specific-soc_ea.patch \
+            file://0021-plat-lx2160acex6-fix-ddr-options-corruption-one-dimm.patch \
+            file://0022-plat-lx2162asom-clarify-single-dimm-setup-in-ddr_get.patch \
 "
 
 # set PLATFORM recipe variable from generic machine config ATF_PLATFORM if defined

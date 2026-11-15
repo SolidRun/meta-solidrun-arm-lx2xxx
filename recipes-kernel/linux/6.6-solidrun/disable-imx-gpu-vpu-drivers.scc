@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "disable imx gpu/vpu drivers"
+define KFEATURE_COMPATIBILITY board
+
+kconf non-hardware disable-imx-gpu-vpu-drivers.cfg

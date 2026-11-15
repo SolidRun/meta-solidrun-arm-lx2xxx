@@ -99,6 +99,9 @@ This layer can generate a range of image types by `WKS_FILE` in local.conf:
 
 DDR Clock can be configured in local.conf using `LX2160A_DDR_SPEED`, supported values are:
 
+- `1600` only for LX2160A, intended for debugging
+- `1866` only for LX2160A, intended for debugging
+- `2133` only for LX2160A, intended for debugging
 - `2400`
 - `2600`
 - `2666`

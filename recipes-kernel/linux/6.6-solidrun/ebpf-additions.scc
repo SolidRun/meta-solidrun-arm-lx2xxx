@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "eBPF additions"
+define KFEATURE_COMPATIBILITY board
+
+kconf non-hardware ebpf-additions.cfg
