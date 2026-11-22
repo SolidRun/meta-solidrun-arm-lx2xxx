@@ -100,7 +100,8 @@ jobs:
               "fsl-lx2160a-cex6-evb.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-cex6-evb.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2160a-rev2-clearfog-cx",
@@ -113,7 +114,8 @@ jobs:
               "fsl-lx2160a-clearfog-cx.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-clearfog-cx.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2160a-rev2-half-twins",
@@ -124,7 +126,8 @@ jobs:
               "fsl-lx2160a-half-twins.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-half-twins.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2160a-rev2-twins-left",
@@ -135,7 +138,8 @@ jobs:
               "fsl-lx2160a-twins-left.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-twins-left.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2160a-rev2-twins-right",
@@ -146,7 +150,8 @@ jobs:
               "fsl-lx2160a-twins-right.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-twins-right.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2160a-rev2-honeycomb",
@@ -159,7 +164,8 @@ jobs:
               "fsl-lx2160a-honeycomb.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-honeycomb.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           },{
             "machine": "lx2162a-rev2-clearfog",
@@ -172,7 +178,8 @@ jobs:
               "fsl-lx2162a-clearfog.dtb",
               "Image.gz",
               "modules-lx2162a-rev2-clearfog.tgz",
-              "xspi.bin"
+              "xspi.bin",
+              "xspi.layout"
             ]
           }
         ]

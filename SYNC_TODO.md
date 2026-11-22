@@ -8,19 +8,6 @@
 Open points of the sync with the SolidRun reference BSP lx2160a_build, i.e. what it has and this layer does not,
 grouped by the sync that first found them (newest first).
 
-## develop-ls-6.6.52-2.2.0 @ b3076aeb6a6c070379a9b5546420e03517be5cae (2026-11-15)
-
-### Other findings
-
-- [ ] **flashrom layout file** (lx2160a_build d19ca92, runme.sh): runme.sh now writes a flashrom layout file
-  `<xspi image>.layout` next to every SPI flash image (one `start:end name` line per region: pbl, fip, env,
-  ddr_fip, fuse_fip, mc, dpl, dpc, dtb, kernel; for the 4M layout also mc_sig, dpc_sig, dpl_sig), and stores it as
-  `/xspi.layout` (or `/xspi_backup.layout`) beside the SPI image in the multi image boot partition.
-  It allows updating single regions with `flashrom --layout <file> --image <name>`.
-  `lx216xa-xspi-image.bb` deploys only `xspi.bin` and could deploy such a file from the same offsets; the layer's
-  wic images do not carry the SPI image in the boot partition at all. Not implemented: file name, deploy location
-  and whether the image recipe should also install it are maintainer decisions.
-
 ## develop-ls-6.6.52-2.2.0 @ 989c11e64a463533879b151acf1a23cfc2db0caa (2026-10-02)
 
 First run of the sync skill: these are long-standing omissions, not changes of this sync range.

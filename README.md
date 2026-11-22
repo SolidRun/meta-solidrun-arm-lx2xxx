@@ -88,6 +88,12 @@ This Layer supports the following images:
 | fsl-image-networking-full | Demo of all packages tested by NXP including dpdk, dpdk examples and vpp       |
 | lx216xa-xspi-image        | Boot image for SPI Flash                                                       |
 
+`lx216xa-xspi-image` deploys `xspi.bin` together with a flashrom layout file `xspi.layout` listing its regions
+(`pbl`, `fip`, `env`, `ddr_fip`, `mc`, `dpl`, `dpc`, `dtb`, `kernel`).
+It allows updating single regions with flashrom, e.g. only the bootloader (`<programmer>` depends on how the flash is accessed):
+
+    flashrom -p <programmer> --layout xspi.layout --image pbl --image fip -w xspi.bin
+
 ### Image Types (wic)
 
 This layer can generate a range of image types by `WKS_FILE` in local.conf:
