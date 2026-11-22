@@ -13,3 +13,12 @@ RCWAUTO ?= "clearfog-cx/rcw_${LX2160A_CPU_SPEED}_${LX2160A_BUS_SPEED}_${LX2160A_
 # select DTB
 UBOOT_FDT ?= "fsl-lx2160a-honeycomb"
 UBOOT_FDT_FILE ?= "freescale/fsl-lx2160a-honeycomb.dtb"
+
+# secondary (backup) boot flash on the carrier, see LX2160A_BOOTFLASH in lx216xa-solidrun.inc
+LX216XA_BOOTFLASH_SIZE_secondary ?= "4M"
+LX216XA_BOOTFLASH_TYPE_secondary ?= "W25Q32"
+# The carrier selects the secondary flash at boot (BIOS_DIS0# override),
+# which swaps xspi chip-selects 0 and 1: machine override xspi-swapped-cs.
+LX216XA_BOOTFLASH_OVERRIDES_primary = ""
+LX216XA_BOOTFLASH_OVERRIDES_secondary = "xspi-swapped-cs:"
+MACHINEOVERRIDES =. "${LX216XA_BOOTFLASH_OVERRIDES_${LX2160A_BOOTFLASH}}"

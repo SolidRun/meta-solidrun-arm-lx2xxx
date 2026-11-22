@@ -63,20 +63,34 @@ SRC_URI += "file://0001-pci-ls_pcie_g4-Wait-100ms-for-Link-Up-in-ls_pcie_g4_.pat
             file://additions.cfg \
 "
 
-do_configure:append() {
-    # apply solidrun build-time options
-    for umachine in ${UBOOT_MACHINE}; do
-        if [ -n "${UBOOT_FDT}" ]; then
-            printf "CONFIG_DEFAULT_DEVICE_TREE=\"%s\"\n" "${UBOOT_FDT}" >> ${B}/$umachine/.config
-        fi
-        if [ -n "${UBOOT_FDT_FILE}" ]; then
-            printf "CONFIG_DEFAULT_FDT_FILE=\"%s\"\n" "${UBOOT_FDT_FILE}" >> ${B}/$umachine/.config
-        fi
-        if [ -n "${UBOOT_ETHPRIME}" ]; then
-            printf "CONFIG_ETHPRIME=\"%s\"\n" "${UBOOT_ETHPRIME}" >> ${B}/$umachine/.config
-        fi
-        oe_runmake -C ${S} O=${B}/${umachine} oldconfig
-    done
+# boot from flash on swapped xspi chip-selects (machine override, e.g. conf/machine/include/lx2160a-clearfog-cx.inc)
+SRC_URI:append:xspi-swapped-cs = " file://xspi-swapped-cs.cfg"
+
+# Apply solidrun build-time options, like lx2160a_build runme.sh do_build_uboot:
+# they are merged into the defconfig together with the .cfg fragments *before*
+# kconfig resolves dependent defaults, e.g. ENV_OFFSET / ENV_SIZE depend on
+# LX2160ACEX7_BOOTMEDIA_*. Appending to an already resolved .config would keep
+# the defaults of the original layout.
+uboot_configure_config:lx216xa-sr () {
+    config=$1
+    type=$2
+
+    mkdir -p ${B}/${config}
+    fragment=${B}/${config}/solidrun-buildtime.cfg
+    : > $fragment
+    if [ -n "${UBOOT_FDT}" ]; then
+        printf "CONFIG_DEFAULT_DEVICE_TREE=\"%s\"\n" "${UBOOT_FDT}" >> $fragment
+    fi
+    if [ -n "${UBOOT_FDT_FILE}" ]; then
+        printf "CONFIG_DEFAULT_FDT_FILE=\"%s\"\n" "${UBOOT_FDT_FILE}" >> $fragment
+    fi
+    if [ -n "${UBOOT_ETHPRIME}" ]; then
+        printf "CONFIG_ETHPRIME=\"%s\"\n" "${UBOOT_ETHPRIME}" >> $fragment
+    fi
+    printf "CONFIG_LX2160ACEX7_BOOTMEDIA_%s=y\n" "${LX216XA_BOOTFLASH_SIZE_${LX2160A_BOOTFLASH}}" >> $fragment
+
+    merge_config.sh -m -O ${B}/${config} ${S}/configs/${config} ${@" ".join(find_cfgs(d))} $fragment
+    oe_runmake -C ${S} O=${B}/${config} olddefconfig
 }
 
 # applying .cfg files requires merge_config.sh provided by kern-tools-native

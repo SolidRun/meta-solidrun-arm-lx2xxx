@@ -129,6 +129,26 @@ Bus clock can be configured in local.conf using `LX2160A_BUS_SPEED`, supported v
 - `700` only for LX2160A binned 2GHz and higher (default)
 - `750` (for over-clocking, or for specifically purchased 2.2GHz binned SoC)
 
+### Boot Flash
+
+Clearfog-CX and HoneyComb carriers have a 4MB backup SPI flash (W25Q32) next to the 64MB SPI flash on the
+COM Express module. The boot flash is configured in local.conf using `LX2160A_BOOTFLASH`, supported values are:
+
+- `primary` (default): 64MB SPI flash on the module, 64MB boot media layout
+- `secondary` (Clearfog-CX and HoneyComb only): 4MB backup SPI flash on the carrier, dense 4MB boot media layout.
+  Booting from the backup flash swaps the SPI chip-selects (BIOS_DIS0# override), u-boot is built to account for that.
+
+The boot media layout applies to the boot loader components of a build (u-boot, ATF), and to
+`lx216xa-xspi-image` (4MB `xspi_backup.bin` and `xspi_backup.layout`, no kernel).
+Primary and secondary images are therefore built separately, e.g. in separate build directories or with a
+separate `TMPDIR` per setting, as the CI does:
+
+    TMPDIR = "${TOPDIR}/tmp-${MACHINE}-${LX2160A_BOOTFLASH}"
+
+Machine configurations define their primary boot flash by `LX216XA_BOOTFLASH_SIZE_primary` (boot media layout,
+`64M` or `4M`) and `LX216XA_BOOTFLASH_TYPE_primary` (ATF `FLASH_TYPE`), and optionally a secondary boot flash by
+`LX216XA_BOOTFLASH_SIZE_secondary` and `LX216XA_BOOTFLASH_TYPE_secondary`, see `conf/machine/include/lx216xa-solidrun.inc`.
+
 ### ATF Debug
 
 ARM Trusted Firmware can be built in debug mode with verbose BL2 / BL31 and DDR training logs on the console,
@@ -137,6 +157,7 @@ by setting in local.conf:
     ATF_DEBUG = "true"
 
 Default is `false` (release build).
+Debug builds of BL2 exceed the 4MB boot media layout (`LX2160A_BOOTFLASH = "secondary"`).
 
 ### MC DPC & DPL
 

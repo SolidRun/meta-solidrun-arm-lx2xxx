@@ -45,6 +45,12 @@ ATF_DEBUG ??= "false"
 ATF_BUILD_TYPE = "${@'debug' if bb.utils.to_boolean(d.getVar('ATF_DEBUG')) else 'release'}"
 EXTRA_OEMAKE:append:lx216xa-sr = " ${@'DEBUG=1 LOG_LEVEL=40 DDR_DEBUG=yes DDR_PHY_DEBUG=yes' if bb.utils.to_boolean(d.getVar('ATF_DEBUG')) else ''} "
 
+# boot flash type and layout (LX2160A_BOOTFLASH, conf/machine/include/lx216xa-solidrun.inc),
+# same values as lx2160a_build runme.sh do_build_atf
+ATF_BOOTFLASH_LAYOUT_64M = "DDR_FIP_OFFSET=0x800000 DDR_FIP_MAX_SIZE=0x032000 FIP_OFFSET=0x100000 FIP_MAX_SIZE=0x400000 FUSE_FIP_OFFSET=0x880000 FUSE_FIP_MAX_SIZE=0x080000"
+ATF_BOOTFLASH_LAYOUT_4M = "DDR_FIP_OFFSET=0x020000 DDR_FIP_MAX_SIZE=0x020000 FIP_OFFSET=0x040000 FIP_MAX_SIZE=0x1b0000 FUSE_FIP_OFFSET=0x200000 FUSE_FIP_MAX_SIZE=0x020000"
+EXTRA_OEMAKE:append:lx216xa-sr = " FLASH_TYPE=${LX216XA_BOOTFLASH_TYPE_${LX2160A_BOOTFLASH}} ${ATF_BOOTFLASH_LAYOUT_${LX216XA_BOOTFLASH_SIZE_${LX2160A_BOOTFLASH}}} "
+
 # override original do_compile adding size check for rcwimg
 # large images must be avoided such that no bl2 is generated for dysfunctional BOOTTYPE,
 # ensuring later steps relying on them will fail.

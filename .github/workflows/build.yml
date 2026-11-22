@@ -118,6 +118,14 @@ jobs:
               "xspi.layout"
             ]
           },{
+            "machine": "lx2160a-rev2-clearfog-cx",
+            "bootflash": "secondary",
+            "targets": ["lx216xa-xspi-image"],
+            "artifacts": [
+              "xspi_backup.bin",
+              "xspi_backup.layout"
+            ]
+          },{
             "machine": "lx2160a-rev2-half-twins",
             "targets": ["lx216xa-xspi-image", "fsl-image-networking"],
             "artifacts": [
@@ -166,6 +174,14 @@ jobs:
               "modules-lx2160a-rev2-honeycomb.tgz",
               "xspi.bin",
               "xspi.layout"
+            ]
+          },{
+            "machine": "lx2160a-rev2-honeycomb",
+            "bootflash": "secondary",
+            "targets": ["lx216xa-xspi-image"],
+            "artifacts": [
+              "xspi_backup.bin",
+              "xspi_backup.layout"
             ]
           },{
             "machine": "lx2162a-rev2-clearfog",
@@ -232,7 +248,8 @@ jobs:
             BASEDIR=$PWD
             source ./setup-env -m lx2160ardb-rev2 -b build
             bitbake-layers add-layer $BASEDIR/sources/meta-solidrun-arm-lx2xxx
-            echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}\"" >> conf/local.conf
+            echo "# separate TMPDIR per machine and boot flash (LX2160A_BOOTFLASH from environment)" >> conf/local.conf
+            echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}-\${LX2160A_BOOTFLASH}\"" >> conf/local.conf
             echo "IMAGE_FSTYPES:append = \" wic.gz \"" >> conf/local.conf
             echo "# break dependency cycle with core-image-minimal used as initramfs" >> conf/local.conf
             echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz\"" >> conf/local.conf
@@ -243,13 +260,14 @@ jobs:
         run: |
             source build/SOURCE_THIS
             export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
-            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
+            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR LX2160A_BOOTFLASH"
 
             echo "$TARGETS" | jq -c '.[]' | while read -r item; do
               machine=$(echo "$item" | jq -r '.machine')
               targets=($(echo "$item" | jq -r '.targets[]'))
+              bootflash=$(echo "$item" | jq -r '.bootflash // "primary"')
 
-              env MACHINE="$machine" bitbake -k ${targets[@]} --runall=fetch
+              env MACHINE="$machine" LX2160A_BOOTFLASH="$bootflash" bitbake -k ${targets[@]} --runall=fetch
             done
         continue-on-error: true
 
@@ -260,13 +278,14 @@ jobs:
         run: |
             source build/SOURCE_THIS
             export CACHE_DIR="$GITHUB_WORKSPACE/buildcache"
-            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR"
+            export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS CACHE_DIR LX2160A_BOOTFLASH"
 
             echo "$TARGETS" | jq -c '.[]' | while read -r item; do
               machine=$(echo "$item" | jq -r '.machine')
               targets=($(echo "$item" | jq -r '.targets[]'))
+              bootflash=$(echo "$item" | jq -r '.bootflash // "primary"')
 
-              env MACHINE="$machine" bitbake -k ${targets[@]}
+              env MACHINE="$machine" LX2160A_BOOTFLASH="$bootflash" bitbake -k ${targets[@]}
             done
         continue-on-error: true
 
@@ -292,8 +311,9 @@ jobs:
             echo "$TARGETS" | jq -c '.[]' | while read -r item; do
               machine=$(echo "$item" | jq -r '.machine')
               artifacts=($(echo "$item" | jq -r '.artifacts[]'))
+              bootflash=$(echo "$item" | jq -r '.bootflash // "primary"')
 
-              tmpdir=$PWD/build/tmp-$machine/deploy/images/$machine
+              tmpdir=$PWD/build/tmp-$machine-$bootflash/deploy/images/$machine
               deploydir=$PWD/deploy/$machine
               mkdir -vp $deploydir
 

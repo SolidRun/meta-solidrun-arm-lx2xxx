@@ -14,6 +14,10 @@ UBOOT_CONFIG[tfa-secure-boot] = "lx2160ardb_tfa_SECURE_BOOT_defconfig,,u-boot-dt
 
 ATF_PLATFORM ?= "lx2162asom"
 
+# primary boot flash on the module, see LX2160A_BOOTFLASH in lx216xa-solidrun.inc
+LX216XA_BOOTFLASH_SIZE_primary ?= "64M"
+LX216XA_BOOTFLASH_TYPE_primary ?= "MT35XU512A"
+
 LX2160A_BUS_SPEED ?= "650"
 LX2160A_CPU_SPEED ?= "2000"
 LX2160A_DDR_SPEED ?= "2900"

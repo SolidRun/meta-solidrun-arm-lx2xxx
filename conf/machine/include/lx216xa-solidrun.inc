@@ -43,6 +43,15 @@ SERIAL_CONSOLES_CHECK ?= "${SERIAL_CONSOLES}"
 
 USE_VT = "0"
 
+# Boot SPI flash, shared by u-boot, atf and the SPI image (lx216xa-xspi-image).
+# Machine configurations define their primary boot SPI flash by
+# LX216XA_BOOTFLASH_SIZE_primary (boot media layout "64M" or "4M") and
+# LX216XA_BOOTFLASH_TYPE_primary (atf FLASH_TYPE), optionally a secondary boot SPI flash
+# by LX216XA_BOOTFLASH_SIZE_secondary and LX216XA_BOOTFLASH_TYPE_secondary.
+# LX2160A_BOOTFLASH (local.conf) selects one, like lx2160a_build runme.sh BOOTFLASH,
+# recipes use e.g. ${LX216XA_BOOTFLASH_SIZE_${LX2160A_BOOTFLASH}}.
+LX2160A_BOOTFLASH ??= "primary"
+
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS:append = " udev-solidrun-lx2xxx "
 
 # generate sd-bootable wic image

@@ -37,15 +37,8 @@ but no machine or documented option selects them; only local.conf overrides of `
 
 ### runme.sh options
 
-- [ ] **BOOTFLASH** (runme.sh, default `primary`): `secondary` builds the boot image for the 4 MB W25Q32 backup SPI flash
-  of HoneyComb / Clearfog-CX only (case `LX2160A_CEX7_HONEYCOMB_*_secondary|LX2160A_CEX7_CLEARFOG-CX_*_secondary`).
-  It sets u-boot `CONFIG_LX2160ACEX7_BOOTMEDIA_4M=y` and `CONFIG_LX2160ACEX7_XSPI_SWAPPED_CS=y` (primary: `_64M`, `n`),
-  ATF `FLASH_TYPE=W25Q32` (primary `MT35XU512A`) with the 4M layout `DDR_FIP_OFFSET=0x020000 DDR_FIP_MAX_SIZE=0x020000
-  FIP_OFFSET=0x040000 FIP_MAX_SIZE=0x1b0000 FUSE_FIP_OFFSET=0x200000 FUSE_FIP_MAX_SIZE=0x020000`, and a 4 MB
-  `*_xspi_backup_*.img` (`do_populate_bootimg_4M`), stored as `/xspi_backup.img` in the multi image instead of `/xspi.img`.
-  Since lx2160a_build 3acdd96 the 4M layout puts DPC (max 2 kB) at 0x3fc000 and DPL (max 14 kB) at 0x3fc800,
-  matching u-boot patch 0058; since 7110d73 (mc-utils patch 0016) the Clearfog-CX / HoneyComb DPL fits (11123 bytes).
-  Since 23823bd runme.sh merges these u-boot options into the defconfig before kconfig resolves dependent defaults
-  (`ENV_OFFSET` depends on the layout); the layer appends its options to the resolved `.config` instead.
-  The u-boot and ATF patches supporting this are already in the layer, but no recipe passes these settings
-  (`lx216xa-xspi-image.bb` and the wks files only produce the 64 MB primary layout).
+- [ ] **BOOTFLASH** (runme.sh, default `primary`): implemented as `LX2160A_BOOTFLASH`, except for SD / eMMC images:
+  runme.sh writes the SD / eMMC (and multi) images with the same boot media layout as the selected boot flash
+  (`do_populate_bootimg_4M` for `secondary`), and stores the SPI image as `/xspi_backup.img` in the multi image.
+  The layer's wic image `lx2160a-bootimg-mmc.wks.in` has only the 64MB layout, so with `LX2160A_BOOTFLASH = "secondary"`
+  its bootloader (u-boot / ATF built for the 4MB layout) does not match the image.
