@@ -60,6 +60,3 @@ but no machine or documented option selects them; only local.conf overrides of `
   matching u-boot patch 0058.
   The u-boot and ATF patches supporting this are already in the layer, but no recipe passes these settings
   (`lx216xa-xspi-image.bb` and the wks files only produce the 64 MB primary layout).
-- [ ] **ATF_DEBUG** (runme.sh, default `false`): `true` builds ATF as `debug` with `DEBUG=1 LOG_LEVEL=40 DDR_DEBUG=yes
-  DDR_PHY_DEBUG=yes` (verbose BL2/BL31 and DDR training console logs). Not implemented so far to avoid layer-specific
-  local.conf variables; could be an opt-in variable in the `qoriq-atf` bbappend.

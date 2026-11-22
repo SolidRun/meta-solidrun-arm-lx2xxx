@@ -123,6 +123,15 @@ Bus clock can be configured in local.conf using `LX2160A_BUS_SPEED`, supported v
 - `700` only for LX2160A binned 2GHz and higher (default)
 - `750` (for over-clocking, or for specifically purchased 2.2GHz binned SoC)
 
+### ATF Debug
+
+ARM Trusted Firmware can be built in debug mode with verbose BL2 / BL31 and DDR training logs on the console,
+by setting in local.conf:
+
+    ATF_DEBUG = "true"
+
+Default is `false` (release build).
+
 ### MC DPC & DPL
 
 Management Complex configuration can be configured in local.conf using `MC_FLAVOUR`, `MC_DPC` and `MC_DPL` variables, supported values are:

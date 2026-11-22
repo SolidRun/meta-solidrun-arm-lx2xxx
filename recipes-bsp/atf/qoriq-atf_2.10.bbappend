@@ -35,9 +35,17 @@ PLATFORM = "${@d.getVar('ATF_PLATFORM') or d.getVar('MACHINE')}"
 # extra solidrun build-time options
 EXTRA_OEMAKE += " DISABLE_S5=${@d.getVar('ATF_DISABLE_S5') or '0'} "
 
+# optional debug build with verbose BL2/BL31 and DDR training console logs,
+# like lx2160a_build runme.sh ATF_DEBUG; enable in local.conf: ATF_DEBUG = "true"
+ATF_DEBUG ??= "false"
+ATF_BUILD_TYPE = "${@'debug' if bb.utils.to_boolean(d.getVar('ATF_DEBUG')) else 'release'}"
+EXTRA_OEMAKE:append:lx216xa-sr = " ${@'DEBUG=1 LOG_LEVEL=40 DDR_DEBUG=yes DDR_PHY_DEBUG=yes' if bb.utils.to_boolean(d.getVar('ATF_DEBUG')) else ''} "
+
 # override original do_compile adding size check for rcwimg
 # large images must be avoided such that no bl2 is generated for dysfunctional BOOTTYPE,
 # ensuring later steps relying on them will fail.
+# Further, artifacts are copied from the build directory of ATF_BUILD_TYPE (release or debug),
+# where the original hard-codes release.
 #
 #--- a/meta-qoriq-bsp/recipes-bsp/atf/qoriq-atf_2.10.bb
 #+++ b/meta-qoriq-bsp/recipes-bsp/atf/qoriq-atf_2.10.bb
@@ -146,39 +154,39 @@ do_compile:lx216xa-sr() {
 	if [ -f ${DEPLOY_DIR_IMAGE}/rcw/${RCW_FOLDER}/$rcwimg ]; then
             make V=1 realclean
             if [ -f rot_key.pem ];then
-                mkdir -p build/${PLATFORM}/release/
-                cp *.pem build/${PLATFORM}/release/
+                mkdir -p build/${PLATFORM}/${ATF_BUILD_TYPE}/
+                cp *.pem build/${PLATFORM}/${ATF_BUILD_TYPE}/
             fi
 
             oe_runmake V=1 all fip pbl ${FIP_DDR} PLAT=${PLATFORM} BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${RCW_FOLDER}/${rcwimg} BL33=${UBOOT_BINARY}
-            cp build/${PLATFORM}/release/bl2_${d}${SECURE_EXTENTION}.pbl .
-            cp build/${PLATFORM}/release/fip.bin fip_uboot${SECURE_EXTENTION}.bin
-            if [ -e build/${PLATFORM}/release/fuse_fip.bin ]; then
-                cp build/${PLATFORM}/release/fuse_fip.bin .
+            cp build/${PLATFORM}/${ATF_BUILD_TYPE}/bl2_${d}${SECURE_EXTENTION}.pbl .
+            cp build/${PLATFORM}/${ATF_BUILD_TYPE}/fip.bin fip_uboot${SECURE_EXTENTION}.bin
+            if [ -e build/${PLATFORM}/${ATF_BUILD_TYPE}/fuse_fip.bin ]; then
+                cp build/${PLATFORM}/${ATF_BUILD_TYPE}/fuse_fip.bin .
             fi
 
-            if [ -e build/${PLATFORM}/release/ddr_fip_sec.bin ] && [ ! -f ddr_fip_sec.bin ]; then
-                cp build/${PLATFORM}/release/ddr_fip_sec.bin .
+            if [ -e build/${PLATFORM}/${ATF_BUILD_TYPE}/ddr_fip_sec.bin ] && [ ! -f ddr_fip_sec.bin ]; then
+                cp build/${PLATFORM}/${ATF_BUILD_TYPE}/ddr_fip_sec.bin .
             fi
 
-            if [ -e build/${PLATFORM}/release/rot_key.pem ] && [ ! -f rot_key.pem ]; then
-                cp build/${PLATFORM}/release/*.pem .
+            if [ -e build/${PLATFORM}/${ATF_BUILD_TYPE}/rot_key.pem ] && [ ! -f rot_key.pem ]; then
+                cp build/${PLATFORM}/${ATF_BUILD_TYPE}/*.pem .
             fi
 
             if [ -n "${PLATFORM_ADDITIONAL_TARGET}" ]; then
                 make V=1 realclean
                 oe_runmake V=1 all fip pbl PLAT=${PLATFORM_ADDITIONAL_TARGET} BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${RCW_FOLDER}/${rcwimg} BL33=${UBOOT_BINARY}
-                cp build/${PLATFORM_ADDITIONAL_TARGET}/release/bl2_${d}${SECURE_EXTENTION}.pbl bl2_${d}${SECURE_EXTENTION}_${PLATFORM_ADDITIONAL_TARGET}.pbl
-                cp build/${PLATFORM_ADDITIONAL_TARGET}/release/fip.bin fip_uboot${SECURE_EXTENTION}_${PLATFORM_ADDITIONAL_TARGET}.bin
-                if [ -e build/${PLATFORM_ADDITIONAL_TARGET}/release/fuse_fip.bin ]; then
-                    cp build/${PLATFORM_ADDITIONAL_TARGET}/release/fuse_fip.bin fuse_fip_${PLATFORM_ADDITIONAL_TARGET}.bin
+                cp build/${PLATFORM_ADDITIONAL_TARGET}/${ATF_BUILD_TYPE}/bl2_${d}${SECURE_EXTENTION}.pbl bl2_${d}${SECURE_EXTENTION}_${PLATFORM_ADDITIONAL_TARGET}.pbl
+                cp build/${PLATFORM_ADDITIONAL_TARGET}/${ATF_BUILD_TYPE}/fip.bin fip_uboot${SECURE_EXTENTION}_${PLATFORM_ADDITIONAL_TARGET}.bin
+                if [ -e build/${PLATFORM_ADDITIONAL_TARGET}/${ATF_BUILD_TYPE}/fuse_fip.bin ]; then
+                    cp build/${PLATFORM_ADDITIONAL_TARGET}/${ATF_BUILD_TYPE}/fuse_fip.bin fuse_fip_${PLATFORM_ADDITIONAL_TARGET}.bin
                 fi
             fi
 
             if [ -z "${SECURE_EXTENTION}" -a -f "${DEPLOY_DIR_IMAGE}/uefi/${PLATFORM}/${uefiboot}" ]; then
                 make V=1 realclean
                 oe_runmake V=1 all fip pbl PLAT=${PLATFORM} BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${RCW_FOLDER}/${rcwimg} BL33=${DEPLOY_DIR_IMAGE}/uefi/${PLATFORM}/${uefiboot}
-                cp build/${PLATFORM}/release/fip.bin fip_uefi.bin
+                cp build/${PLATFORM}/${ATF_BUILD_TYPE}/fip.bin fip_uefi.bin
             fi
         fi
         rcwimg=""

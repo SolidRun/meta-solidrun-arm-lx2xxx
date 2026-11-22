@@ -181,6 +181,7 @@ Each such option is a user-visible feature of lx2160a_build; one without a row i
 | TARGET             | -                 | choice of MACHINE, see table "runme.sh TARGET → MACHINE" |
 | BOOTSOURCE         | BOOTTYPE          | machine BOOTTYPE / RCW* variables; images for all boot sources are built |
 | SECURE             | -                 | secure boot is handled differently in Yocto (meta-qoriq secure boot support, e.g. UBOOT_CONFIG tfa-secure-boot) |
+| ATF_DEBUG          | ATF_DEBUG         | local.conf option (README "ATF Debug"), debug build of qoriq-atf |
 | SHALLOW            | -                 | git clone depth of runme.sh; bitbake fetcher has its own mirror logic |
 | CCACHE_DISABLE     | -                 | compiler cache of runme.sh; bitbake uses sstate-cache |
 | DISTRO             | -                 | Debian/Ubuntu rootfs of runme.sh; Yocto builds its own images |
@@ -196,11 +197,7 @@ Each such option is a user-visible feature of lx2160a_build; one without a row i
 Background for items that are deliberately **not** in the tables above, so they keep being reported as TODO.
 Use it to write a meaningful `SYNC_TODO.md` entry; it is not a reason to map them.
 
-- `ATF_DEBUG` - selects an ATF debug build: compile-time options setting debug output verbosity
-  (`ATF_DEBUG=true` makes runme.sh build ATF as `debug` with `DEBUG=1 LOG_LEVEL=40 DDR_DEBUG=yes DDR_PHY_DEBUG=yes`,
-  i.e. verbose BL2/BL31 and DDR training logs on the console). Not implemented in the layer so far,
-  to avoid adding many layer-specific global (local.conf) variables; a possible implementation would be an
-  opt-in variable in the `qoriq-atf` bbappend.
+None at the moment.
 
 ## Components cloned by runme.sh → Yocto recipes
 
