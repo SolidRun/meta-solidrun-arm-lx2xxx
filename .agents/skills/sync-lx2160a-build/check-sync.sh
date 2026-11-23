@@ -3,7 +3,8 @@
 # Static consistency checks between the SolidRun reference BSP lx2160a_build and this layer.
 # All mappings are read from project-map.md next to this script.
 # Network use is limited to 'git ls-remote' (disable with -o); NXP component repositories are never
-# cloned or fetched - existing lx2160a_build build/<component> checkouts are used if present.
+# cloned or fetched - existing lx2160a_build build/<component> checkouts are used if present
+# and have exactly the current patches/<component> applied on top.
 #
 # Output lines start with OK / WARN / FAIL / TODO.
 #   FAIL: the layer contradicts a mapping in project-map.md - must be fixed.
@@ -514,7 +515,17 @@ else
 		npatch=$(ls "$REF/patches/$comp/"*.patch 2>/dev/null | wc -l)
 		lrev=
 		if [ -d "$REF/build/$comp/.git" ]; then
-			lrev=$(git -C "$REF/build/$comp" rev-parse -q --verify "HEAD~$npatch" 2>/dev/null)
+			# use the checkout only if its last $npatch commits are exactly patches/<comp> (same subjects,
+			# same order): runme.sh applies them with git am, a stale checkout would give a wrong base
+			want=$(for p in "$REF/patches/$comp/"*.patch; do
+				[ -e "$p" ] && git mailinfo /dev/null /dev/null <"$p" | sed -n 's/^Subject: //p'
+			done)
+			have=$(git -C "$REF/build/$comp" log --reverse --format=%s "HEAD~$npatch..HEAD" 2>/dev/null)
+			if [ "$want" = "$have" ]; then
+				lrev=$(git -C "$REF/build/$comp" rev-parse -q --verify "HEAD~$npatch" 2>/dev/null)
+			else
+				warn "$comp: build/$comp does not have patches/$comp applied as its last $npatch commits (stale checkout?) - not used as base revision"
+			fi
 		fi
 		rrev=
 		if [ $OFFLINE = 0 ]; then

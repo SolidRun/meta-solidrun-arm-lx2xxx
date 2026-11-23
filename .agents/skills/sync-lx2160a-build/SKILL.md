@@ -266,6 +266,9 @@ runme.sh clones each NXP component and applies patches on top. The base must be 
 Yocto recipe builds (effective `SRCREV`), otherwise the patches were validated on different code.
 check-sync.sh compares them (needs `-s`). It resolves the base revision used by lx2160a_build with `git ls-remote` (a few bytes per
 component) and additionally with `build/<component>` checkouts if they already exist - never clone them.
+A `build/<component>` checkout is only used when its last commits are exactly the current `patches/<component>`
+(same subjects, same order); a stale checkout is reported as WARN and ignored - mention it in the report, the
+`git ls-remote` comparison still applies.
 
 - Mismatch caused by a lx2160a_build commit that deliberately moves a component (e.g. "update mc firmware to
   10.x") → override `SRCREV` (and `PV`/branch if needed) in this layer's bbappend and describe it in the commit.
