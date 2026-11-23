@@ -44,6 +44,8 @@ but no machine or documented option selects them; only local.conf overrides of `
   FIP_OFFSET=0x040000 FIP_MAX_SIZE=0x1b0000 FUSE_FIP_OFFSET=0x200000 FUSE_FIP_MAX_SIZE=0x020000`, and a 4 MB
   `*_xspi_backup_*.img` (`do_populate_bootimg_4M`), stored as `/xspi_backup.img` in the multi image instead of `/xspi.img`.
   Since lx2160a_build 3acdd96 the 4M layout puts DPC (max 2 kB) at 0x3fc000 and DPL (max 14 kB) at 0x3fc800,
-  matching u-boot patch 0058.
+  matching u-boot patch 0058; since 7110d73 (mc-utils patch 0016) the Clearfog-CX / HoneyComb DPL fits (11123 bytes).
+  Since 23823bd runme.sh merges these u-boot options into the defconfig before kconfig resolves dependent defaults
+  (`ENV_OFFSET` depends on the layout); the layer appends its options to the resolved `.config` instead.
   The u-boot and ATF patches supporting this are already in the layer, but no recipe passes these settings
   (`lx216xa-xspi-image.bb` and the wks files only produce the 64 MB primary layout).

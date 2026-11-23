@@ -17,4 +17,5 @@ SRC_URI += "file://0001-add-solidrun-lx2160-cex7-based-clearfog-cx-dpl-dpc.patch
             file://0013-lx2160acex7-clearfog-cx-activate-linux-netdevs-durin.patch \
             file://0014-lx2162asom-clearfog-switch-serdes-macs-to-backplane-.patch \
             file://0015-lx2160acex6-evb-switch-serdes-macs-to-backplane-mode.patch \
+            file://0016-lx2160acex7-clearfog-cx-drop-implicit-dpl-properties.patch \
 "

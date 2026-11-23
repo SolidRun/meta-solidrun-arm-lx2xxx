@@ -27,6 +27,10 @@ SRC_URI += "file://0001-fiptool-disable-pedantic-flag-to-avoid-errors-with-o.pat
             file://0020-plat-lx2160a-add-mechanism-for-board-specific-soc_ea.patch \
             file://0021-plat-lx2160acex6-fix-ddr-options-corruption-one-dimm.patch \
             file://0022-plat-lx2162asom-clarify-single-dimm-setup-in-ddr_get.patch \
+            file://0023-plat-lx2160a-add-secure-watchdog-from-bl2-onwards.patch \
+            file://0024-plat-lx2160a-add-option-to-start-non-secure-watchdog.patch \
+            file://0025-drivers-nxp-ddr-poll-phy-mailbox-in-10us-steps.patch \
+            file://0026-plat-lx2160acex6-7-lx2162asom-enable-el3-watchdog-an.patch \
 "
 
 # set PLATFORM recipe variable from generic machine config ATF_PLATFORM if defined
