@@ -182,6 +182,7 @@ Each such option is a user-visible feature of lx2160a_build; one without a row i
 | BOOTSOURCE         | BOOTTYPE          | machine BOOTTYPE / RCW* variables; images for all boot sources are built |
 | SECURE             | -                 | secure boot is handled differently in Yocto (meta-qoriq secure boot support, e.g. UBOOT_CONFIG tfa-secure-boot) |
 | ATF_DEBUG          | ATF_DEBUG         | local.conf option (README "ATF Debug"), debug build of qoriq-atf |
+| BOOTFLASH          | LX2160A_BOOTFLASH | local.conf option (README "Boot Flash"); SPI image only, wic SD/eMMC image keeps the 64MB layout |
 | SHALLOW            | -                 | git clone depth of runme.sh; bitbake fetcher has its own mirror logic |
 | CCACHE_DISABLE     | -                 | compiler cache of runme.sh; bitbake uses sstate-cache |
 | DISTRO             | -                 | Debian/Ubuntu rootfs of runme.sh; Yocto builds its own images |
