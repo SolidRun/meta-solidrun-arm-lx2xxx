@@ -92,5 +92,6 @@ DELTA_KERNEL_DEFCONFIG:append = " sctp.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " disable-imx-gpu-vpu-drivers.cfg "
 DELTA_KERNEL_DEFCONFIG:append = " ebpf-additions.cfg "
 
-# CONFIG_DEBUG_INFO_BTF (ebpf-additions.cfg) needs pahole and host libelf (resolve_btfids)
+# CONFIG_DEBUG_INFO_BTF (ebpf-additions.cfg) needs pahole and host libelf (resolve_btfids),
+# pahole >= 1.29 for reproducible BTF (recipes-devtools/pahole)
 DEPENDS += "elfutils-native pahole-native"
