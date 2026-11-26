@@ -28,12 +28,12 @@ XSPI_REGIONS = "${XSPI_REGIONS_${LX216XA_BOOTFLASH_SIZE_${LX2160A_BOOTFLASH}}}"
 # content is one of:
 # - file in DEPLOY_DIR_IMAGE; alternatives separated by ",", the first one existing is used
 # - "zero": region is filled with zeros
-# - "none": region is left erased, but listed in the layout file (e.g. u-boot environment)
+# - "erased": region is filled with 0xff like erased flash (e.g. u-boot environment)
 XSPI_SIZE_64M = "64"
 XSPI_REGIONS_64M = " \
     pbl:0:1048576:atf/bl2_auto.pbl,atf/bl2_flexspi_nor.pbl \
     fip:2048:4194304:atf/fip_uboot.bin \
-    env:10240:131072:none \
+    env:10240:131072:erased \
     ddr_fip:16384:2097152:ddr-phy/fip_ddr.bin \
     mc:20480:3145728:mc_app/mc.itb \
     dpl:26624:1048576:mc-utils/${MC_DPL} \
@@ -48,7 +48,7 @@ XSPI_REGIONS_4M = " \
     pbl:0:131072:atf/bl2_auto.pbl,atf/bl2_flexspi_nor.pbl \
     ddr_fip:256:131072:ddr-phy/fip_ddr.bin \
     fip:512:1769472:atf/fip_uboot.bin \
-    env:3968:65536:none \
+    env:3968:65536:erased \
     mc:4352:1835008:mc_app/mc.itb \
     dtb:7936:102400:${DTB_NAME} \
     mc_sig:8136:4096:zero \
@@ -78,8 +78,10 @@ do_compile() {
         content=$4
 
         case "$content" in
-        none)
+        erased)
             size=$maxsize
+            tr '\000' '\377' < /dev/zero | dd of=${B}/xspi.bin conv=notrunc bs=512 seek=$offset \
+                count=$(expr $size / 512) iflag=fullblock
             ;;
         zero)
             size=$maxsize
