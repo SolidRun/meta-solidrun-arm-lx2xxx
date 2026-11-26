@@ -97,6 +97,7 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-cex6-evb.rootfs.wic.bmap",
               "fsl-lx2160a-cex6-evb.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-cex6-evb.tgz",
@@ -110,8 +111,10 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.manifest",
               "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2160a-rev2-clearfog-cx.rootfs.wic.bmap",
               "fsl-lx2160a-clearfog-cx.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-clearfog-cx.tgz",
@@ -134,6 +137,7 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-half-twins.rootfs.wic.bmap",
               "fsl-lx2160a-half-twins.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-half-twins.tgz",
@@ -147,6 +151,7 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-twins-left.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-twins-left.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-twins-left.rootfs.wic.bmap",
               "fsl-lx2160a-twins-left.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-twins-left.tgz",
@@ -160,6 +165,7 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-twins-right.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-twins-right.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-twins-right.rootfs.wic.bmap",
               "fsl-lx2160a-twins-right.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-twins-right.tgz",
@@ -173,8 +179,10 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.manifest",
               "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.gz",
+              "fsl-image-networking-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.manifest",
               "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2160a-rev2-honeycomb.rootfs.wic.bmap",
               "fsl-lx2160a-honeycomb.dtb",
               "Image.gz",
               "modules-lx2160a-rev2-honeycomb.tgz",
@@ -197,8 +205,10 @@ jobs:
             "artifacts": [
               "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.manifest",
               "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.gz",
+              "fsl-image-networking-lx2162a-rev2-clearfog.rootfs.wic.bmap",
               "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.manifest",
               "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.gz",
+              "fsl-image-networking-full-lx2162a-rev2-clearfog.rootfs.wic.bmap",
               "fsl-lx2162a-clearfog.dtb",
               "Image.gz",
               "modules-lx2162a-rev2-clearfog.tgz",
@@ -259,9 +269,9 @@ jobs:
             bitbake-layers add-layer $BASEDIR/sources/meta-solidrun-arm-lx2xxx
             echo "# separate TMPDIR per machine and boot flash (LX2160A_BOOTFLASH from environment)" >> conf/local.conf
             echo "TMPDIR = \"\${TOPDIR}/tmp-\${MACHINE}-\${LX2160A_BOOTFLASH}\"" >> conf/local.conf
-            echo "IMAGE_FSTYPES:append = \" wic.gz \"" >> conf/local.conf
+            echo "IMAGE_FSTYPES:append = \" wic.gz wic.bmap \"" >> conf/local.conf
             echo "# break dependency cycle with core-image-minimal used as initramfs" >> conf/local.conf
-            echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz\"" >> conf/local.conf
+            echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz wic.bmap\"" >> conf/local.conf
             echo "# include OP-TEE in ATF like lx2160a_build (README)" >> conf/local.conf
             echo "DISTRO_FEATURES:append = \" optee\"" >> conf/local.conf
             echo "require conf/includes/ci.conf" >> conf/local.conf
