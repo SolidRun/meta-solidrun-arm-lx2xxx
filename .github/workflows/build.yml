@@ -253,6 +253,8 @@ jobs:
             echo "IMAGE_FSTYPES:append = \" wic.gz \"" >> conf/local.conf
             echo "# break dependency cycle with core-image-minimal used as initramfs" >> conf/local.conf
             echo "IMAGE_FSTYPES:remove:pn-core-image-minimal = \"wic.gz\"" >> conf/local.conf
+            echo "# include OP-TEE in ATF like lx2160a_build (README)" >> conf/local.conf
+            echo "DISTRO_FEATURES:append = \" optee\"" >> conf/local.conf
             echo "require conf/includes/ci.conf" >> conf/local.conf
 
       - name: Download Sources

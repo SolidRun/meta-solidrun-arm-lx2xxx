@@ -40,6 +40,13 @@ Start in a **new empty directory** with plenty of free disk space - at least 30G
      IMAGE_FSTYPES:remove:pn-core-image-minimal = "wic.gz"
      ```
 
+     Enable OP-TEE (BL32) for machines that support it. append:
+
+     ```
+     # enable optee distro-feature missing from fsl-qoriq
+     DISTRO_FEATURES:append = " optee"
+     ```
+
    - See below for additional configuration options.
 
 4. Build nxp image `fsl-image-networking`:
