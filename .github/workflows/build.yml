@@ -101,7 +101,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-cex6-evb.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-clearfog-cx",
@@ -115,7 +116,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-clearfog-cx.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-clearfog-cx",
@@ -123,7 +125,8 @@ jobs:
             "targets": ["lx216xa-xspi-image"],
             "artifacts": [
               "xspi_backup.bin",
-              "xspi_backup.layout"
+              "xspi_backup.layout",
+              "xspi_backup.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-half-twins",
@@ -135,7 +138,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-half-twins.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-twins-left",
@@ -147,7 +151,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-twins-left.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-twins-right",
@@ -159,7 +164,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-twins-right.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-honeycomb",
@@ -173,7 +179,8 @@ jobs:
               "Image.gz",
               "modules-lx2160a-rev2-honeycomb.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           },{
             "machine": "lx2160a-rev2-honeycomb",
@@ -181,7 +188,8 @@ jobs:
             "targets": ["lx216xa-xspi-image"],
             "artifacts": [
               "xspi_backup.bin",
-              "xspi_backup.layout"
+              "xspi_backup.layout",
+              "xspi_backup.bmap"
             ]
           },{
             "machine": "lx2162a-rev2-clearfog",
@@ -195,7 +203,8 @@ jobs:
               "Image.gz",
               "modules-lx2162a-rev2-clearfog.tgz",
               "xspi.bin",
-              "xspi.layout"
+              "xspi.layout",
+              "xspi.bmap"
             ]
           }
         ]

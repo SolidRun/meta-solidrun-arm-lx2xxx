@@ -101,6 +101,9 @@ It allows updating single regions with flashrom, e.g. only the bootloader (`<pro
 
     flashrom -p <programmer> --layout xspi.layout --image pbl --image fip -w xspi.bin
 
+It also deploys a bmap file `xspi.bmap` mapping only the 4KiB blocks of its regions - not the unallocated space between
+regions - for tools writing only mapped blocks, such as bmaptool.
+
 ### Image Types (wic)
 
 This layer can generate a range of image types by `WKS_FILE` in local.conf:
@@ -146,7 +149,7 @@ COM Express module. The boot flash is configured in local.conf using `LX2160A_BO
   Booting from the backup flash swaps the SPI chip-selects (BIOS_DIS0# override), u-boot is built to account for that.
 
 The boot media layout applies to the boot loader components of a build (u-boot, ATF), and to
-`lx216xa-xspi-image` (4MB `xspi_backup.bin` and `xspi_backup.layout`, no kernel).
+`lx216xa-xspi-image` (4MB `xspi_backup.bin`, `xspi_backup.layout` and `xspi_backup.bmap`, no kernel).
 Primary and secondary images are therefore built separately, e.g. in separate build directories or with a
 separate `TMPDIR` per setting, as the CI does:
 

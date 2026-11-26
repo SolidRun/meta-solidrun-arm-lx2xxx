@@ -1,10 +1,14 @@
 SUMMARY = "Raw XSPI Flash Image for LX2160A"
 DESCRIPTION = "Stitches together RCW, ATF, U-Boot, and MC firmware into a raw binary for XSPI, \
-and a flashrom layout file describing its regions"
+a flashrom layout file describing its regions, and a bmap file of the blocks with content"
 LICENSE = "MIT"
 
 # This recipe doesn't produce a rootfs, it just packages binaries
 inherit deploy
+
+# bmaptool for the bmap file (python script, needs python3-native like image_types.bbclass)
+DEPENDS += "bmaptool-native python3-native"
+EXTRANATIVEPATH += "python3-native"
 
 # Dependencies: Ensure all firmware is built and deployed first
 do_compile[depends] += " \
@@ -59,7 +63,7 @@ XSPI_REGIONS_4M = " \
 "
 
 do_compile() {
-    rm -f ${B}/xspi.bin ${B}/xspi.layout
+    rm -f ${B}/xspi.bin ${B}/xspi.layout ${B}/xspi.bmap ${B}/xspi.sparse
 
     # Create a flash image filled with 0xFF (erased Flash)
     tr '\000' '\377' < /dev/zero | dd of=${B}/xspi.bin bs=1M count=${XSPI_SIZE} iflag=fullblock
@@ -67,6 +71,8 @@ do_compile() {
     # Place each region at its offset (conv=notrunc keeps the rest),
     # and record it in a flashrom layout file (<start>:<end> <name>), like runme.sh do_layout_add
     : > ${B}/xspi.layout
+    # 4KiB blocks of regions with content (<first block>:<number of blocks>), for the bmap file
+    bmap_blocks=
     for region in ${XSPI_REGIONS}; do
         oldifs="$IFS"
         IFS=":"
@@ -111,6 +117,9 @@ do_compile() {
             start=$(expr $offset \* 512 || true)
             end=$(expr $start + $size - 1 || true)
             printf "%08x:%08x %s\n" $start $end $name >> ${B}/xspi.layout
+            first=$(expr $start / 4096 || true)
+            last=$(expr $end / 4096 || true)
+            bmap_blocks="$bmap_blocks $first:$(expr $last - $first + 1)"
         fi
     done
 
@@ -118,6 +127,17 @@ do_compile() {
     if [ $(stat -c "%s" ${B}/xspi.bin) -ne $(expr ${XSPI_SIZE} \* 1048576) ]; then
         bbfatal "xspi image exceeds ${XSPI_SIZE} MiB"
     fi
+
+    # bmap file mapping only the blocks of regions with content, e.g. for bmaptool copy:
+    # create it from a sparse copy of the image holding just these blocks,
+    # so that the checksums match xspi.bin (unallocated gaps between regions are not mapped)
+    truncate -s $(stat -c "%s" ${B}/xspi.bin) ${B}/xspi.sparse
+    for blocks in $bmap_blocks; do
+        dd if=${B}/xspi.bin of=${B}/xspi.sparse conv=notrunc bs=4096 \
+            skip=${blocks%:*} seek=${blocks%:*} count=${blocks#*:}
+    done
+    bmaptool create -o ${B}/xspi.bmap ${B}/xspi.sparse
+    rm -f ${B}/xspi.sparse
 }
 
 # deployed file names, the image for the backup boot flash is named xspi_backup like in lx2160a_build
@@ -132,8 +152,10 @@ do_deploy() {
     install -d ${DEPLOYDIR}
     install -m 0644 ${B}/xspi.bin ${DEPLOYDIR}/${XSPI_DEPLOY_NAME}.bin
     install -m 0644 ${B}/xspi.layout ${DEPLOYDIR}/${XSPI_DEPLOY_NAME}.layout
+    install -m 0644 ${B}/xspi.bmap ${DEPLOYDIR}/${XSPI_DEPLOY_NAME}.bmap
     ln -sf ${XSPI_DEPLOY_NAME}.bin ${DEPLOYDIR}/${XSPI_LINK_NAME}.bin
     ln -sf ${XSPI_DEPLOY_NAME}.layout ${DEPLOYDIR}/${XSPI_LINK_NAME}.layout
+    ln -sf ${XSPI_DEPLOY_NAME}.bmap ${DEPLOYDIR}/${XSPI_LINK_NAME}.bmap
 }
 
 addtask deploy after do_compile
